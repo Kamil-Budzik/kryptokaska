@@ -1,6 +1,6 @@
 import { BrowserWindow, Dialog, IpcMain, PrintToPDFOptions } from "electron";
-import { CryptoEntry, FileManager, Settings } from "../src/utils/fileManager";
 import fs from "fs/promises";
+import { CryptoEntry, FileManager, Settings } from "./file-manager";
 const pdfOptions: PrintToPDFOptions = {
     pageSize: "A4",
     printBackground: false,
@@ -50,6 +50,11 @@ export const addEventListeners = (window: BrowserWindow, ipcMain: IpcMain, dialo
             const selectedFolder = result.filePaths[0];
             event.reply('folder-selected', selectedFolder);
         }
+    });
+
+    ipcMain.on("load-headquarters", (event) => {
+        const headquarters = FileManager.getHeadquarters();
+        event.reply("headquarters-loaded", headquarters);
     });
 
     ipcMain.on("print-to-pdf", async (event) => {

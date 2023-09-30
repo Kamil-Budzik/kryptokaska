@@ -1,5 +1,5 @@
-import {AxiosUtil} from "../integrations/axios/Axios.ts";
-import {NBPApi} from "../integrations/apis/nbp.ts";
+import {AxiosUtil} from "../integrations/axios/Axios";
+import {NBPApi} from "../integrations/apis/nbp";
 
 export class CurrencyConversionUtil {
 
