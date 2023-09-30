@@ -6,3 +6,8 @@ export interface CurrencyData {
     OneDayVolumeAverage: number
     Currency: string
 }
+
+export interface HistoricalData {
+    dates: string[]
+    prices: number[]
+}
