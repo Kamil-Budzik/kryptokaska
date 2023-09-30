@@ -13,8 +13,9 @@ type Inputs = {
     cryptoAssets: { cryptoAsset: string; amountOfCryptoAsset: string }[];
 }
 
+const INPUT_CANT_BE_EMPTY = "Pole nie może być puste";
+
 function NewReport() {
-    const INPUT_CANT_BE_EMPTY = "Pole nie może być puste";
     const {
         register,
         control,
@@ -47,7 +48,7 @@ function NewReport() {
                         <TextField
                             required
                             error={!!errors.enforcementAuthority}
-                            helperText={errors.enforcementAuthority ? INPUT_CANT_BE_EMPTY : undefined}
+                            helperText={errors.enforcementAuthority ? INPUT_CANT_BE_EMPTY : null}
                             fullWidth
                             id="enforcementAuthority"
                             label="Nazwa organu egzekucyjnego"
@@ -58,7 +59,7 @@ function NewReport() {
                         <TextField
                             required
                             error={!!errors.caseNumber}
-                            helperText={errors.caseNumber ? INPUT_CANT_BE_EMPTY : undefined}
+                            helperText={errors.caseNumber ? INPUT_CANT_BE_EMPTY : null}
                             fullWidth
                             id="caseNumber"
                             label="Numer sprawy"
@@ -69,7 +70,7 @@ function NewReport() {
                         <TextField
                             required
                             error={!!errors.cryptoCurrencyOwnerData}
-                            helperText={errors.cryptoCurrencyOwnerData ? INPUT_CANT_BE_EMPTY : undefined}
+                            helperText={errors.cryptoCurrencyOwnerData ? INPUT_CANT_BE_EMPTY : null}
                             fullWidth
                             id="cryptoCurrencyOwnerData"
                             label="Dane identyfikujące właściciela kryptowaluty"
@@ -108,28 +109,6 @@ function NewReport() {
                             + Dodaj kryptoaktywo
                         </Button>
                     </Grid>
-                    {/*<Grid item xs={6}>*/}
-                    {/*    <TextField*/}
-                    {/*        required*/}
-                    {/*        error={!!errors.cryptoAsset}*/}
-                    {/*        helperText={errors.cryptoAsset ? INPUT_CANT_BE_EMPTY : undefined}*/}
-                    {/*        fullWidth*/}
-                    {/*        id="cryptoAsset"*/}
-                    {/*        label="Nazwa kryptoaktywa"*/}
-                    {/*        {...register("cryptoAsset", {required: true})}*/}
-                    {/*    />*/}
-                    {/*</Grid>*/}
-                    {/*<Grid item xs={6}>*/}
-                    {/*    <TextField*/}
-                    {/*        required*/}
-                    {/*        error={!!errors.amountOfCryptoAsset}*/}
-                    {/*        helperText={errors.amountOfCryptoAsset ? INPUT_CANT_BE_EMPTY : undefined}*/}
-                    {/*        fullWidth*/}
-                    {/*        id="amountOfCryptoAsset"*/}
-                    {/*        label="Ilość kryptoaktywów"*/}
-                    {/*        {...register("amountOfCryptoAsset", {required: true})}*/}
-                    {/*    />*/}
-                    {/*</Grid>*/}
                 </Grid>
                 <Button
                     type="submit"
