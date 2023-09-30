@@ -1,4 +1,5 @@
-import {Link} from "react-router-dom";
+import {NavLink as Link} from "react-router-dom";
+import {Button} from "@mui/material";
 
 import './App.css'
 
@@ -7,25 +8,26 @@ function App() {
   return (
    <>
     <header>
-        <h1>Root page</h1>
         <ul>
             <li>
-                <Link to={"/summary"}>Summary</Link>
+                <Link to={"/summary"}>
+                    <Button>Summary</Button>
+                </Link>
             </li>
             <li>
-                <Link to={"/settings"}>Settings</Link>
+                <Link to={"/settings"}><Button>Settings</Button></Link>
             </li>
             <li>
-                <Link to={"/manual"}>Manual</Link>
+                <Link to={"/manual"}><Button>Manual</Button></Link>
             </li>
             <li>
-                <Link to={"/new-report"}>New Report</Link>
+                <Link to={"/new-report"}><Button>New Report</Button></Link>
             </li>
             <li>
-                <Link to={"/pdf-summary"}>pdf-summary</Link>
+                <Link to={"/pdf-summary"}><Button>pdf-summary</Button></Link>
             </li>
             <li>
-                <Link to={"/api-summary"}>Api summary</Link>
+                <Link to={"/api-summary"}><Button>Api summary</Button></Link>
             </li>
         </ul>
     </header>
