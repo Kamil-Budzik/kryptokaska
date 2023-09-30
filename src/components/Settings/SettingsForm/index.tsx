@@ -1,15 +1,16 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Button, Input } from '@mui/material';
+import { StyledForm } from './styles.ts';
 
 type Inputs = {
   shortName: string;
-  longName: string;
+  fullName: string;
 };
 
 const SettingsForm = ({
   handleAddition,
 }: {
-  handleAddition: (shortName: string, longName: string) => void;
+  handleAddition: (shortName: string, fullName: string) => void;
 }) => {
   const {
     formState: { errors },
@@ -18,19 +19,25 @@ const SettingsForm = ({
     register,
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    handleAddition(data.shortName, data.longName);
+    handleAddition(data.shortName, data.fullName);
     reset();
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Input {...register('shortName', { required: true })} />
-      <Input {...register('longName', { required: true })} />
+    <StyledForm onSubmit={handleSubmit(onSubmit)}>
+      <Input
+        {...register('shortName', { required: true })}
+        placeholder="symbol"
+      />
+      <Input
+        {...register('fullName', { required: true })}
+        placeholder="nazwa"
+      />
       {/* @ts-ignore */}
       <Button type="submit" disabled={errors.shortName || errors.longName}>
         Dodaj
       </Button>
-    </form>
+    </StyledForm>
   );
 };
 

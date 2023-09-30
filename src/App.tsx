@@ -1,5 +1,4 @@
 import { NavLink as Link } from 'react-router-dom';
-import { useEffect } from "react";
 
 // components
 import { Button } from '@mui/material';
@@ -8,15 +7,12 @@ import Wrapper from './components/UI/Wrapper';
 import './App.css';
 
 function App() {
-      useEffect(() => {
-        window.ipcRenderer.send("print-to-pdf")     
-      }, []);
+
   return (
     <Wrapper>
       <main>
         <nav>
           <ul>
-
             <li>
               <Link to="/settings">
                 <Button>Settings</Button>
