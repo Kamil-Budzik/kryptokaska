@@ -13,8 +13,8 @@ const ListDisplay = ({
     window.ipcRenderer.send('select-folder');
     window.ipcRenderer.on('folder-selected', (_event, arg) => {
       setLogPath(arg);
+      window.ipcRenderer.send('update-log-path', arg);
     });
-    window.ipcRenderer.send('update-log-path', logPath);
   };
   return (
     <StyledFlexContainer>
