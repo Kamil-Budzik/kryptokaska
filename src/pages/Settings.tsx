@@ -12,18 +12,20 @@ export interface Crypto {
 }
 
 function Settings() {
-  const [items, setItems] = useState<Crypto[]>();
+  const [items, setItems] = useState<Crypto[]>([]);
   const [logPath, setLogPath] = useState('');
 
   useEffect(() => {
     window.ipcRenderer.send('load-settings');
     window.ipcRenderer.on('settings-loaded', (_event, arg) => {
-      if (arg?.avaibleCryptos) setItems(arg?.avaibleCryptos);
+      console.log(arg?.availableCryptos);
+      if (arg?.availableCryptos) setItems(arg?.availableCryptos);
       if (arg?.logPath) setLogPath(arg?.logPath);
     });
   }, []);
 
   const handleAddition = (shortName: string, fullName: string) => {
+    console.log(items);
     setItems((prev) => [...prev!, { shortName, fullName }]);
     window.ipcRenderer.send('add-new-crypto', {
       id: shortName,

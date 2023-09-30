@@ -26,17 +26,17 @@ export const addEventListeners = (
     FileManager.log(data);
   });
 
-  ipcMain.on('get-avaible-cryptos', (event) => {
-    const cryptos = FileManager.getAvaibleCryptos();
-    event.reply('avaible-cryptos', cryptos);
+  ipcMain.on('get-available-cryptos', (event) => {
+    const cryptos = FileManager.getAvailableCryptos();
+    event.reply('available-cryptos', cryptos);
   });
 
   ipcMain.on('add-new-crypto', (_event, data: CryptoEntry) => {
-    FileManager.addAvaibleCrypto(data);
+    FileManager.addAvailableCrypto(data);
   });
 
-  ipcMain.on('remove-avaible-crypto', (_event, data: string) => {
-    FileManager.removeAvaibleCrypto(data);
+  ipcMain.on('remove-available-crypto', (_event, data: string) => {
+    FileManager.removeAvailableCrypto(data);
   });
 
   ipcMain.on('update-log-path', (_event, data: string) => {
