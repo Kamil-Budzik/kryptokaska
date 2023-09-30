@@ -6,14 +6,14 @@ import { Button } from '@mui/material';
 import Wrapper from './components/UI/Wrapper';
 // styles
 import './App.css';
-import {CoinGecko} from "./integrations/apis/coingecko.ts";
-import {AxiosUtil} from "./integrations/axios/Axios.ts";
+// import {CoinGecko} from "./integrations/apis/coingecko.ts";
+// import {AxiosUtil} from "./integrations/axios/Axios.ts";
 
 function App() {
-    (() => {
-        const coingecko = new CoinGecko(new AxiosUtil())
-        coingecko.getHistoricalData("bitcoin", 1)
-    })();
+    // (() => {
+    //     const coingecko = new CoinGecko(new AxiosUtil())
+    //     coingecko.getHistoricalData("bitcoin", 1)
+    // })();
 
 
     useEffect(() => {

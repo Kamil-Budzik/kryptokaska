@@ -6,12 +6,7 @@ export interface CurrencyData {
     oneDayVolume?: number
 }
 
-export interface historicalData {
-    currency: string
-    records: record[]
-}
-
-export interface record {
-    price: number
-    date: Date
+export interface HistoricalData {
+    dates: string[]
+    prices: number[]
 }
