@@ -23,15 +23,8 @@ export class ExchangeData {
     }
 
     describe(): string {
-        return `The cryptocurrency ${this.cryptocurrency} has a volume of ${this.volume24h} and an average value of ${this.averageValue24h} over the last 24 hours.`;
+        return `The cryptocurrency ${this.cryptocurrency} has a volume of 
+        ${this.volume24h} and an average value of ${this.averageValue24h} 
+        over the last 24 hours.`;
     }
 }
-
-// Example usage:
-const bitcoinData = new ExchangeData(
-    'Bitcoin',
-    1000, // example volume in the last 24 hours
-    50000 // example average value in the last 24 hours
-);
-
-console.log(bitcoinData.describe());

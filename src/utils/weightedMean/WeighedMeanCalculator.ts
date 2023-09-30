@@ -13,7 +13,7 @@ export class WeighedMeanCalculator {
     we could create a settings view that would allow user to
     modify this value.
      */
-    public removeVolumeOutliers(dataList: ExchangeData[],
+    removeVolumeOutliers(dataList: ExchangeData[],
                                 numberOfStandardDeviations: number = 1): ExchangeData[] {
 
         const standardDeviation = this.calculateStandardDeviation(dataList);
@@ -26,7 +26,7 @@ export class WeighedMeanCalculator {
     Use this method on a list of ExchangeData that was
     filtered by removeVolumeOutliers method.
      */
-    public weightedPriceMean(dataList: ExchangeData[]): number {
+    weightedPriceMean(dataList: ExchangeData[]): number {
         const sumOfWeightedValues =
             dataList.reduce((sum, data) =>
                 sum + data.getVolume24h() * data.getAverageValue24h(), 0);
@@ -55,7 +55,7 @@ export class WeighedMeanCalculator {
     }
 
     //method that generates sample data to test solution
-    public getSampleData(): ExchangeData[] {
+    getSampleData(): ExchangeData[] {
         return [
             new ExchangeData('Bitcoin', 48, 117930.50),
             new ExchangeData('Bitcoin', 40, 120000.23),
