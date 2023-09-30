@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import {headquarters} from "./statics/headquarters"
 
 export interface CryptoEntry {
     id: string;
@@ -18,7 +19,6 @@ export class FileManager {
     private static readonly logFileName = "kryptokasa.log";
 
     private static settings: Settings
-    private static headquarters: string[];
 
     private static join(...parts: string[]): string {
         return path.join(...parts);
@@ -126,12 +126,7 @@ export class FileManager {
     }
 
     public static getHeadquarters(): string[] {
-        if(this.headquarters) {
-            return this.headquarters;
-        }
-
-        this.headquarters = fs.readFileSync(path.join(__dirname, "./static/headquaters.txt"), "utf-8")?.split("\n") ?? [];
-        return this.headquarters;
+        return headquarters
     }
 
 }
