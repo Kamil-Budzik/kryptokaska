@@ -1,4 +1,4 @@
-export interface BinanceResponse {
+export interface Responses {
     weightedAvgPrice: number
     volume: number
 }
