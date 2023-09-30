@@ -1,10 +1,23 @@
 import {Link} from "react-router-dom";
 
 import './App.css'
+import { useEffect } from "react";
+
 
 function App() {
+    useEffect(() => {
+        window.ipcRenderer.send("load-settings")     
+        window.ipcRenderer.on("settings-loaded", (_event, arg) => {
+            console.log(arg)
+        })
+        window.ipcRenderer.send("add-new-crypto", {
+            id: "new-crypto",
+            fullName: "new-crypto",
+            shortName: "new",
+        });
 
-  return (
+      }, []);
+  return (  
    <>
     <header>
         <h1>Root page</h1>

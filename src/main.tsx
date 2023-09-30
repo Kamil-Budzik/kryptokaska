@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import {
-    createBrowserRouter,
+    createHashRouter,
     createRoutesFromElements,
     Route,
     RouterProvider,
@@ -17,19 +17,20 @@ import ApiSummary from "./pages/ApiSummary.tsx";
 //styles
 import './index.css'
 
-
-const router = createBrowserRouter(
+const router = createHashRouter(
     createRoutesFromElements(
-        <Route path="/" element={<App />}>
-            <Route path="summary" element={<Summary />} />
-            <Route path="settings" element={<Settings />} />
-            <Route path="manual" element={<Manual />} />
-            <Route path="new-report" element={<NewReport />} />
-            <Route path="pdf-summary" element={<PdfSummary />} />
-            <Route path="api-summary" element={<ApiSummary />} />
-        </Route>
+      <Route path="/" element={<App />}>
+        <Route path="summary" element={<Summary />} />
+        <Route path="settings" element={<Settings />} />
+        <Route path="manual" element={<Manual />} />
+        <Route path="new-report" element={<NewReport />} />
+        <Route path="pdf-summary" element={<PdfSummary />} />
+        <Route path="api-summary" element={<ApiSummary />} />
+      </Route>
     )
-);
+  );
+
+
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
