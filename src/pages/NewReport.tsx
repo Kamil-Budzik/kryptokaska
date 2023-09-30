@@ -1,21 +1,25 @@
 import {useForm, SubmitHandler, useFieldArray} from "react-hook-form"
-import {Button, Divider, Typography} from "@mui/material";
+import {Autocomplete, Button, Divider, Typography} from "@mui/material";
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Wrapper from '../components/UI/Wrapper';
+import {useEffect, useState} from "react";
+import {CryptoEntry} from "../../electron/file-manager.ts";
 
 
 type Inputs = {
     enforcementAuthority: string
     caseNumber: string
     cryptoCurrencyOwnerData: string
-    cryptoAssets: { cryptoAsset: string; amountOfCryptoAsset: string }[];
+    cryptoAssets: { cryptoAsset: string; amountOfCryptoAsset: string}[];
 }
 
 const INPUT_CANT_BE_EMPTY = "Pole nie może być puste";
 
 function NewReport() {
+    const [headquarters, setHeadquarters] = useState<string[]>();
+    const [availableCryptoCurrencies, setAvailableCryptoCurrencies] = useState<CryptoEntry[]>();
     const {
         register,
         control,
@@ -26,6 +30,23 @@ function NewReport() {
             cryptoAssets: [{cryptoAsset: '', amountOfCryptoAsset: ''}],
         },
     });
+
+    useEffect(() => {
+        window.ipcRenderer.send('load-headquarters');
+        window.ipcRenderer.on('headquarters-loaded', (_event, arg) => {
+            if (arg) setHeadquarters(arg);
+        });
+        window.ipcRenderer.send('get-available-cryptos');
+        window.ipcRenderer.on('available-cryptos', (_event, arg) => {
+            if (arg) {
+                const cryptocurrencies = arg.map((crypto: CryptoEntry) => {
+                    return crypto.fullName + " (" + crypto.shortName + ")";
+                });
+                setAvailableCryptoCurrencies(cryptocurrencies);
+            }
+        });
+
+    }, []);
 
     const {fields, append, remove} = useFieldArray({
         control,
@@ -45,14 +66,20 @@ function NewReport() {
             <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{mt: 3}}>
                 <Grid container justifyContent="center" spacing={2}>
                     <Grid item xs={12}>
-                        <TextField
-                            required
-                            error={!!errors.enforcementAuthority}
-                            helperText={errors.enforcementAuthority ? INPUT_CANT_BE_EMPTY : null}
-                            fullWidth
-                            id="enforcementAuthority"
-                            label="Nazwa organu egzekucyjnego"
-                            {...register("enforcementAuthority", {required: true})}
+                        <Autocomplete
+                            freeSolo
+                            options={headquarters || []}
+                            id="clear-on-escape"
+                            renderInput={(params) => (
+                                <TextField {...params}
+                                           required
+                                           error={!!errors.enforcementAuthority}
+                                           helperText={errors.enforcementAuthority ? INPUT_CANT_BE_EMPTY : null}
+                                           fullWidth
+                                           id="enforcementAuthority"
+                                           label="Nazwa organu egzekucyjnego"
+                                           {...register("enforcementAuthority", {required: true})}/>
+                            )}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -80,15 +107,23 @@ function NewReport() {
                     {fields.map((field, index) => (
                         <Grid item xs={12} key={field.id} container spacing={2} alignItems = "center">
                             <Grid item xs={fields.length === 1 ? 6 : 5}>
-                                <TextField
-                                    fullWidth
-                                    label="Nazwa Kryptoaktywa"
-                                    defaultValue={field.cryptoAsset}
-                                    {...register(`cryptoAssets.${index}.cryptoAsset`)}
+                                <Autocomplete
+                                    clearOnEscape
+                                    options={availableCryptoCurrencies || []}
+                                    id="clear-on-escape"
+                                    renderInput={(params) => (
+                                        <TextField {...params}
+                                                   required
+                                                   fullWidth
+                                                   label="Nazwa Kryptoaktywa"
+                                                   {...register(`cryptoAssets.${index}.cryptoAsset`)}
+                                        />
+                                    )}
                                 />
                             </Grid>
                             <Grid item xs={fields.length === 1 ? 6 : 5}>
                                 <TextField
+                                    required
                                     fullWidth
                                     label="Ilość kryptoaktywów"
                                     defaultValue={field.amountOfCryptoAsset}
