@@ -1,7 +1,17 @@
 export interface Api {
-    getCurrencyData (currency: string): Promise<CurrecyData>
+    getCurrencyData (currency: string): Promise<CurrencyData>
 }
-export interface CurrecyData {
-    OneDayPriceAverage?: number
-    OneDayVolumeAverage?: number
+export interface CurrencyData {
+    oneDayPriceAverage?: number
+    oneDayVolume?: number
+}
+
+export interface historicalData {
+    currency: string
+    records: record[]
+}
+
+export interface record {
+    price: number
+    date: Date
 }
