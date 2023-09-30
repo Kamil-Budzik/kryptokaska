@@ -1,9 +1,13 @@
 import {Link} from "react-router-dom";
 
 import './App.css'
+import {test} from "./integrations/axios/Axios.ts";
 
 function App() {
-
+    (async ()=>{
+        const testObject = new test()
+        await testObject.binance()
+    })();
   return (
    <>
     <header>
