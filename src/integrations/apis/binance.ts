@@ -6,7 +6,7 @@ export class Binance implements Api {
 
     constructor(private readonly client: AxiosUtil) {
     }
-    async getCurrencyData(currency: string): Promise<CurrencyData> {
+    async getCurrencyData(currency: string): Promise<CurrencyData | undefined>  {
         const productId = this.formatCurrencyId(currency)
         const url = Urls.BINANCE_BASE_URL + `/api/v3/avgPrice`
         try {
@@ -14,11 +14,13 @@ export class Binance implements Api {
                 symbol: productId
             })
             return {
-                oneDayPriceAverage: response.data.weightedAvgPrice,
-                oneDayVolume: response.data.volume
+                OneDayPriceAverage: response.data.weightedAvgPrice,
+                OneDayVolumeAverage: response.data.volume,
+                Currency: currency
             }
         } catch (error) {
-            return {}
+            console.error('Error while getting currency data from Binance')
+            return undefined
         }
     }
 

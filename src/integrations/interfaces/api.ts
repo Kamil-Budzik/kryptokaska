@@ -1,9 +1,10 @@
 export interface Api {
-    getCurrencyData (currency: string): Promise<CurrencyData>
+    getCurrencyData (currency: string): Promise<CurrencyData | undefined>
 }
 export interface CurrencyData {
-    oneDayPriceAverage?: number
-    oneDayVolume?: number
+    OneDayPriceAverage: number
+    OneDayVolumeAverage: number
+    Currency: string
 }
 
 export interface HistoricalData {

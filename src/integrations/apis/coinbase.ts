@@ -6,17 +6,19 @@ export class Coinbase implements Api {
 
     constructor(private readonly client: AxiosUtil) {
     }
-    async getCurrencyData(currency: string): Promise<CurrencyData> {
+    async getCurrencyData(currency: string): Promise<CurrencyData | undefined> {
         const productId = this.formatProductId(currency)
         const url = Urls.COINBASE_BASE_URL + `/products/${productId}/stats`
         try {
             const response = await this.client.getCall(url)
             return {
-                oneDayPriceAverage: response.data.open,
-                oneDayVolume: response.data.volume
+                OneDayPriceAverage: response.data.open,
+                OneDayVolumeAverage: response.data.volume,
+                Currency: currency
             }
         } catch (error) {
-            return {}
+            console.error('Error while getting currency data from Coinbase')
+            return undefined
         }
     }
 

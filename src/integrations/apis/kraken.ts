@@ -6,7 +6,7 @@ export class Kraken implements Api {
 
     constructor(private readonly client: AxiosUtil) {
     }
-    async getCurrencyData(currency: string): Promise<CurrencyData> {
+    async getCurrencyData(currency: string): Promise<CurrencyData | undefined> {
         const productId = this.formatProductId(currency)
         const url = Urls.KRAKEN_BASE_URL + `/public/Ticker`
         try {
@@ -14,11 +14,13 @@ export class Kraken implements Api {
                 pair: productId
             })
             return {
-                oneDayPriceAverage: response.data.result[productId].p[1],
-                oneDayVolume: response.data.result[productId].v[1]
+                OneDayPriceAverage: response.data.result[productId].p[1],
+                OneDayVolumeAverage: response.data.result[productId].v[1],
+                Currency: currency
             }
         } catch (error) {
-            return {}
+            console.error('Error while getting currency data from Kraken')
+            return undefined
         }
     }
 
