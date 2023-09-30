@@ -1,4 +1,4 @@
-import {AxiosClient} from "../integrations/axios/Axios.ts";
+import {AxiosUtil} from "../integrations/axios/Axios.ts";
 
 export class CurrencyConversionUtil {
 
@@ -8,7 +8,7 @@ export class CurrencyConversionUtil {
 
     private axiosClient
 
-    constructor(axiosClient: AxiosClient) {
+    constructor(axiosClient: AxiosUtil) {
         this.axiosClient = axiosClient
     }
 

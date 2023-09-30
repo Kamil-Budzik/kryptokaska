@@ -1,6 +1,6 @@
 import {Api, CurrecyData} from "../interfaces/api.ts";
 import {AxiosUtil} from "../axios/Axios.ts";
-import {Constants} from "../axios/Constants.ts";
+import {Urls} from "../axios/constants/Urls.ts";
 
 export class Binance implements Api {
 
@@ -8,7 +8,7 @@ export class Binance implements Api {
     }
     async getCurrencyData(currency: string): Promise<CurrecyData> {
         const productId = this.formatCurrencyId(currency)
-        const url = Constants.BINANCE_BASE_URL + `/api/v3/avgPrice`
+        const url = Urls.BINANCE_BASE_URL + `/api/v3/avgPrice`
         try {
             const response = await this.client.getCall( url,{
                 symbol: productId
