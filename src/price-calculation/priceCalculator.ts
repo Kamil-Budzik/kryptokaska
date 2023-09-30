@@ -4,6 +4,7 @@ import {Coinbase} from "../integrations/apis/coinbase.ts";
 import {Kraken} from "../integrations/apis/kraken.ts";
 import {CurrencyData} from "../integrations/interfaces/api.ts";
 import {WeighedMeanCalculator} from "../utils/weightedMean/WeighedMeanCalculator.ts";
+import { CurrencyConversionUtil } from '../utils/CurrencyConversionUtil.ts';
 
 export class PriceCalculator {
 
@@ -12,6 +13,7 @@ export class PriceCalculator {
     coinbaseApi = new Coinbase(this.axiosClient)
     krakenApi = new Kraken(this.axiosClient)
     weighedMeanCalculator = new WeighedMeanCalculator()
+    currencyConverter = new CurrencyConversionUtil(this.axiosClient)
 
     async getCalculationData(currency: string): Promise<(CurrencyData | undefined)[]> {
         const binanceData = await this.binanceApi.getCurrencyData(currency)
@@ -22,7 +24,8 @@ export class PriceCalculator {
 
     async calculateAveragePrice(datasets: CurrencyData[]): Promise<number> {
         const datasetsWithoutOutliers = this.weighedMeanCalculator.removeVolumeOutliers(datasets)
-        return this.weighedMeanCalculator.weightedPriceMean(datasetsWithoutOutliers)
+        const priceMeanUSD = this.weighedMeanCalculator.weightedPriceMean(datasetsWithoutOutliers)
+        return this.currencyConverter.convertToPln('USD', priceMeanUSD)
     }
 
 }
