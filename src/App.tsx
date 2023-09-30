@@ -2,8 +2,18 @@ import { NavLink as Link } from 'react-router-dom';
 import { Button } from '@mui/material';
 
 import './App.css';
+import {AxiosClient} from "./integrations/axios/Axios.ts";
 
 function App() {
+
+  (async ()=>{
+    console.log('test123')
+    const testObject = new AxiosClient()
+    await testObject.getBinanceCurrencyData("BTCUSDT")
+    console.log('NBP')
+    await testObject.getNBPCurrencyExchangeRate("A", "USD")
+  })();
+
   return (
     <>
       <header>
