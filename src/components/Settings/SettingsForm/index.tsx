@@ -3,13 +3,13 @@ import { Button, Input } from '@mui/material';
 
 type Inputs = {
   shortName: string;
-  longName: string;
+  fullName: string;
 };
 
 const SettingsForm = ({
   handleAddition,
 }: {
-  handleAddition: (shortName: string, longName: string) => void;
+  handleAddition: (shortName: string, fullName: string) => void;
 }) => {
   const {
     formState: { errors },
@@ -18,14 +18,14 @@ const SettingsForm = ({
     register,
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    handleAddition(data.shortName, data.longName);
+    handleAddition(data.shortName, data.fullName);
     reset();
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Input {...register('shortName', { required: true })} />
-      <Input {...register('longName', { required: true })} />
+      <Input {...register('fullName', { required: true })} />
       {/* @ts-ignore */}
       <Button type="submit" disabled={errors.shortName || errors.longName}>
         Dodaj

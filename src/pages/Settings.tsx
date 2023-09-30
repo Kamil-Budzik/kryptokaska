@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // components
 import ListDisplay from '../components/Settings/ListDisplay';
 import SettingsForm from '../components/Settings/SettingsForm';
@@ -7,7 +7,7 @@ import styled from '@emotion/styled';
 
 export interface Crypto {
   shortName: string;
-  longName: string;
+  fullName: string;
 }
 
 const StyledSection = styled.section`
@@ -17,23 +17,34 @@ const StyledSection = styled.section`
 `;
 
 function Settings() {
-  const [items, setItems] = useState<Crypto[]>([
-    { shortName: 'BT', longName: 'Bitcoin' },
-    { shortName: 'ET', longName: 'Ethereum' },
-  ]);
+  const [items, setItems] = useState<Crypto[]>();
 
-  const handleAddition = (shortName: string, longName: string) => {
-    setItems((prev) => [...prev, { shortName, longName }]);
+  useEffect(() => {
+    window.ipcRenderer.send('load-settings');
+    window.ipcRenderer.on('settings-loaded', (_event, arg) => {
+      if (!arg?.avaibleCryptos) return;
+      setItems(arg?.avaibleCryptos);
+    });
+  }, []);
+
+  const handleAddition = (shortName: string, fullName: string) => {
+    setItems((prev) => [...prev!, { shortName, fullName }]);
+    window.ipcRenderer.send('add-new-crypto', {
+      id: shortName,
+      shortName: shortName,
+      fullName: fullName,
+    });
   };
 
   const handleDelete = (shortName: string) => {
-    setItems((prev) => prev.filter((item) => item.shortName !== shortName));
+    setItems((prev) => prev?.filter((item) => item.shortName !== shortName));
+    window.ipcRenderer.send('remove-available-crypto', shortName);
   };
 
   return (
     <Wrapper>
       <SettingsForm handleAddition={handleAddition} />
-      {items.length ? (
+      {items?.length ? (
         <StyledSection>
           <header>Twoje kryptowaluty</header>
           <ListDisplay items={items} handleDelete={handleDelete} />
