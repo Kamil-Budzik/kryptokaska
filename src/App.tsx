@@ -1,7 +1,7 @@
 import { NavLink as Link } from 'react-router-dom';
 // components
 import { Button } from '@mui/material';
-import Wrapper from './components/Wrapper';
+import Wrapper from './components/UI/Wrapper';
 // styles
 import './App.css';
 
