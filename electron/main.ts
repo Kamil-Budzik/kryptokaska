@@ -23,9 +23,25 @@ function createWindow() {
     icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      webSecurity: false
     },
     fullscreen: true,
   })
+
+  win.webContents.session.webRequest.onBeforeSendHeaders(
+      (details, callback) => {
+        callback({ requestHeaders: { Origin: '*', ...details.requestHeaders } });
+      },
+  );
+
+  win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        'Access-Control-Allow-Origin': ['*'],
+        ...details.responseHeaders,
+      },
+    });
+  });
 
   // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {

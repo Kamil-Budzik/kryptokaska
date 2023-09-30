@@ -1,11 +1,11 @@
 import {Link} from "react-router-dom";
 
 import './App.css'
-import {test} from "./integrations/axios/Axios.ts";
+import {Test} from "./integrations/axios/Axios.ts";
 
 function App() {
     (async ()=>{
-        const testObject = new test()
+        const testObject = new Test()
         await testObject.binance()
     })();
   return (
