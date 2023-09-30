@@ -1,5 +1,11 @@
-import { BrowserWindow, Dialog, IpcMain } from "electron";
+import { BrowserWindow, Dialog, IpcMain, PrintToPDFOptions } from "electron";
 import { CryptoEntry, FileManager, Settings } from "../src/utils/fileManager";
+import fs from "fs/promises";
+const pdfOptions: PrintToPDFOptions = {
+    pageSize: "A4",
+    printBackground: false,
+    landscape: false,
+};
 
 export const addEventListeners = (window: BrowserWindow, ipcMain: IpcMain, dialog: Dialog) => {
     ipcMain.on("save-settings", (_event, data: Settings) => {
@@ -35,15 +41,36 @@ export const addEventListeners = (window: BrowserWindow, ipcMain: IpcMain, dialo
     });
 
     ipcMain.on("select-folder", async (event) => {
-            const result = await dialog.showOpenDialog(window, {
-                title: 'Wybierz folder do zapisu',
-                properties: ['openDirectory'],
-            })     
+        const result = await dialog.showOpenDialog(window, {
+            title: 'Wybierz folder do zapisu',
+            properties: ['openDirectory'],
+        })
 
-            if (!result.canceled) {
-                const selectedFolder = result.filePaths[0];
-                event.reply('folder-selected', selectedFolder);
-            }
+        if (!result.canceled) {
+            const selectedFolder = result.filePaths[0];
+            event.reply('folder-selected', selectedFolder);
+        }
     });
-    
-}
+
+    ipcMain.on("print-to-pdf", async (event) => {
+        try {
+            const pathToSave = await dialog.showSaveDialog(window, {
+                title: 'Zapisz raport',
+                defaultPath: 'raport.pdf',
+                filters: [{ name: 'PDF Files', extensions: ['pdf'] }],
+            });
+
+            if (!pathToSave.canceled) {
+                const pdfResult = await window.webContents.printToPDF(pdfOptions);
+                await fs.writeFile(pathToSave.filePath ?? "", pdfResult);
+                event.reply("print-success");
+            } else {
+                event.reply("print-canceled");
+            }
+        } catch (error) {
+            console.log(error);
+            event.reply("print-failed");
+        }
+    });
+};
+
