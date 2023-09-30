@@ -6,12 +6,6 @@ export class WeighedMeanCalculator {
     Why I made this as a separate method?
     We might want to inform the user about removed outliers - in that
     case this should be a separate step.
-
-    numberOfStandardDeviations is an optional parameter, that
-    specifies how conservative our removeOutliers method should be.
-    The default value is 1, which is quite conservative, optionally
-    we could create a settings view that would allow user to
-    modify this value.
      */
     removeVolumeOutliers(dataList: ExchangeData[],
                                 numberOfStandardDeviations: number = 1): ExchangeData[] {
