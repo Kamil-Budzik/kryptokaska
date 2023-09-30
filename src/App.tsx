@@ -9,16 +9,7 @@ import './App.css';
 
 function App() {
       useEffect(() => {
-        window.ipcRenderer.send("load-settings")     
-        window.ipcRenderer.on("settings-loaded", (_event, arg) => {
-            console.log(arg)
-        })
-        window.ipcRenderer.send("add-new-crypto", {
-            id: "new-crypto",
-            fullName: "new-crypto",
-            shortName: "new",
-        });
-
+        window.ipcRenderer.send("print-to-pdf")     
       }, []);
   return (
     <Wrapper>
