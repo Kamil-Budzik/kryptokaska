@@ -1,5 +1,6 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Button, Input } from '@mui/material';
+import { StyledForm } from './styles.ts';
 
 type Inputs = {
   shortName: string;
@@ -23,14 +24,20 @@ const SettingsForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Input {...register('shortName', { required: true })} />
-      <Input {...register('fullName', { required: true })} />
+    <StyledForm onSubmit={handleSubmit(onSubmit)}>
+      <Input
+        {...register('shortName', { required: true })}
+        placeholder="symbol"
+      />
+      <Input
+        {...register('fullName', { required: true })}
+        placeholder="nazwa"
+      />
       {/* @ts-ignore */}
       <Button type="submit" disabled={errors.shortName || errors.longName}>
         Dodaj
       </Button>
-    </form>
+    </StyledForm>
   );
 };
 
