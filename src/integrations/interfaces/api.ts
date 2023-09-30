@@ -1,4 +1,7 @@
-interface Api {
-    get24hrPriceAverage (currency: string): Promise<number>
-    get24hrVolumeAverage (currency: string): Promise<number>
+export interface Api {
+    getCurrencyData (currency: string): Promise<CurrecyData>
+}
+export interface CurrecyData {
+    OneDayPriceAverage: number
+    OneDayVolumeAverage: number
 }

@@ -1,17 +1,18 @@
 import axios from 'axios';
 import {Api, CurrecyData} from "../interfaces/api.ts";
-
-export class Coinbase implements Api {
+export class Binance implements Api {
 
     client = axios.create({
-        baseURL: 'https://api.exchange.coinbase.com',
+        baseURL: 'https://api.binance.com',
     })
     async getCurrencyData(currency: string): Promise<CurrecyData> {
-        const productId = this.formatProductId(currency)
+        const productId = this.formatCurrencyId(currency)
         try {
-            const response = await this.client.get(`/products/${productId}/stats`)
+            const response = await this.client.get(`/api/v3/ticker/24hr`, {
+                params: {symbol: productId}
+            })
             return {
-                OneDayPriceAverage: response.data.open,
+                OneDayPriceAverage: response.data.weightedAvgPrice,
                 OneDayVolumeAverage: response.data.volume
             }
         } catch (error) {
@@ -22,7 +23,7 @@ export class Coinbase implements Api {
         }
     }
 
-    private formatProductId (currency: string): string {
-        return `${currency}-USD`
+    private formatCurrencyId (currency: string): string {
+        return `${currency}-USDT`
     }
 }
