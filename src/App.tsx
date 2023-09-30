@@ -7,7 +7,6 @@ import Wrapper from './components/UI/Wrapper';
 import './App.css';
 
 function App() {
-
   return (
     <Wrapper>
       <main>
