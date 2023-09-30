@@ -1,20 +1,26 @@
 import {AxiosUtil} from "../integrations/axios/Axios.ts";
+import {NBPApi} from "../integrations/apis/nbp.ts";
 
 export class CurrencyConversionUtil {
 
-    private tablesMap = new Map<string, string>([
-        ["USD", "A"]
-    ])
+    private tablesMap: Record<string, string> = {
+        USD: 'A',
+    }
 
-    private axiosClient
+
+    private nbpApi: NBPApi
 
     constructor(axiosClient: AxiosUtil) {
-        this.axiosClient = axiosClient
+        this.nbpApi = new NBPApi(axiosClient)
     }
 
     async convertToPln(currency: string, amount: number): Promise<number> {
+        const table = this.tablesMap[currency]
+        if( table == undefined ){
+            throw new Error('Currency not supported')
+        }
         const rate
-            = await this.axiosClient.getNBPCurrencyExchangeRate(this.tablesMap.get(currency) ?? 'A', currency)
+            = await this.nbpApi.getNBPCurrencyExchangeRate(table , currency)
         return rate * amount
     }
 }
