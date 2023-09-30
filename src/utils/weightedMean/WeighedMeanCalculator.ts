@@ -1,4 +1,4 @@
-import {ExchangeData} from "./ExchangeData.ts";
+import {ExchangeData} from "./ExchangeData";
 
 export class WeighedMeanCalculator {
 
