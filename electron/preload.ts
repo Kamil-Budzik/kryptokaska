@@ -5,7 +5,6 @@ contextBridge.exposeInMainWorld('ipcRenderer', withPrototype(ipcRenderer))
 
 // `exposeInMainWorld` can't detect attributes and methods of `prototype`, manually patching it.
 function withPrototype(obj: Record<string, any>) {
-  console.log('withPrototype', obj);
   const protos = Object.getPrototypeOf(obj)
 
   for (const [key, value] of Object.entries(protos)) {
