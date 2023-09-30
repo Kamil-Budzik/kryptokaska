@@ -1,5 +1,11 @@
-import { BrowserWindow, Dialog, IpcMain } from 'electron';
-import { CryptoEntry, FileManager, Settings } from '../src/utils/fileManager';
+import { BrowserWindow, Dialog, IpcMain, PrintToPDFOptions } from 'electron';
+import fs from 'fs/promises';
+import { CryptoEntry, FileManager, Settings } from './file-manager';
+const pdfOptions: PrintToPDFOptions = {
+  pageSize: 'A4',
+  printBackground: false,
+  landscape: false,
+};
 
 export const addEventListeners = (
   window: BrowserWindow,
@@ -20,7 +26,7 @@ export const addEventListeners = (
     FileManager.log(data);
   });
 
-  ipcMain.on('get-available-cryptos', (event) => {
+  ipcMain.on('get-avaible-cryptos', (event) => {
     const cryptos = FileManager.getAvaibleCryptos();
     event.reply('avaible-cryptos', cryptos);
   });
@@ -29,7 +35,7 @@ export const addEventListeners = (
     FileManager.addAvaibleCrypto(data);
   });
 
-  ipcMain.on('remove-available-crypto', (_event, data: string) => {
+  ipcMain.on('remove-avaible-crypto', (_event, data: string) => {
     FileManager.removeAvaibleCrypto(data);
   });
 
@@ -46,6 +52,32 @@ export const addEventListeners = (
     if (!result.canceled) {
       const selectedFolder = result.filePaths[0];
       event.reply('folder-selected', selectedFolder);
+    }
+  });
+
+  ipcMain.on('load-headquarters', (event) => {
+    const headquarters = FileManager.getHeadquarters();
+    event.reply('headquarters-loaded', headquarters);
+  });
+
+  ipcMain.on('print-to-pdf', async (event) => {
+    try {
+      const pathToSave = await dialog.showSaveDialog(window, {
+        title: 'Zapisz raport',
+        defaultPath: 'raport.pdf',
+        filters: [{ name: 'PDF Files', extensions: ['pdf'] }],
+      });
+
+      if (!pathToSave.canceled) {
+        const pdfResult = await window.webContents.printToPDF(pdfOptions);
+        await fs.writeFile(pathToSave.filePath ?? '', pdfResult);
+        event.reply('print-success');
+      } else {
+        event.reply('print-canceled');
+      }
+    } catch (error) {
+      console.log(error);
+      event.reply('print-failed');
     }
   });
 };

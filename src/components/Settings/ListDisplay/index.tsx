@@ -11,7 +11,7 @@ const ListDisplay = ({
   return (
     <ul>
       {items.map((item) => (
-        <li>
+        <li key={item.shortName}>
           <Input value={item.shortName} disabled readOnly />
           <Input value={item.fullName} disabled readOnly />
           <Button onClick={() => handleDelete(item.shortName)}>X</Button>
