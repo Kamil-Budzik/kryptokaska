@@ -9,6 +9,7 @@ import { CryptoEntry } from '../../electron/file-manager.ts';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { changeFormState } from '../store/new-report';
+import { Link } from 'react-router-dom';
 
 type Inputs = {
   enforcementAuthority: string;
@@ -20,8 +21,6 @@ type Inputs = {
 const INPUT_CANT_BE_EMPTY = 'Pole nie może być puste';
 
 function NewReport() {
-  // TODO: remove that useSelector hook if not needed
-  const state = useSelector((state: RootState) => state.newReport);
   const dispatch = useDispatch();
   const [headquarters, setHeadquarters] = useState<string[]>();
   const [availableCryptoCurrencies, setAvailableCryptoCurrencies] =
@@ -58,9 +57,7 @@ function NewReport() {
     name: 'cryptoAssets',
   });
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log('DATA', data);
     dispatch(changeFormState(data));
-    console.log('STATE', state);
   };
 
   return (
@@ -192,6 +189,7 @@ function NewReport() {
         >
           Generuj Raport
         </Button>
+        <Link to="/summary">Summary</Link>
       </Box>
     </Wrapper>
   );
