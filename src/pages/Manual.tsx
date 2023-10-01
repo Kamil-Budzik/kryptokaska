@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import TextField from '@mui/material/TextField';
-import { Button, InputLabel, Select, MenuItem, Input } from '@mui/material';
+import { Button, InputLabel, Select, MenuItem } from '@mui/material';
 import { changeFormState } from '../store/manual';
 import styled from '@emotion/styled';
 import { useState } from 'react';
@@ -29,10 +29,10 @@ function Manual() {
   const [isPLNField, setIsPLNField] = useState(false);
   const dispatch = useDispatch();
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
     dispatch(changeFormState(data));
   };
 
+  // Sorry for that, but it's working i guess
   watch(
     ('currency',
     (formState) => {
@@ -43,7 +43,7 @@ function Manual() {
       }
     }),
   );
-
+  // TODO: add styles and proper validation
   return (
     <>
       <StyledForm onSubmit={handleSubmit(onSubmit)}>
@@ -65,7 +65,10 @@ function Manual() {
             {...register('amount', { required: true, valueAsNumber: true })}
           />
           <br />
-          {isPLNField && <TextField value={111} disabled />}
+          {/*TODO: pass dynamic value based on dolar's ratio */}
+          {isPLNField && (
+            <TextField value={111} disabled label="PLN" sx={{ my: 5 }} />
+          )}
           <InputLabel id="currency">Waluta</InputLabel>
           <Select
             labelId="currency"
