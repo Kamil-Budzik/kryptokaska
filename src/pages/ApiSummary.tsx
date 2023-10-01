@@ -1,6 +1,7 @@
 import Wrapper from "../components/UI/Wrapper";
 import {Divider, Typography} from "@mui/material";
 import CryptoApiCard from "../components/ApiSummary/CryptoApiCard.tsx";
+import CheckCryptoTechnicalAnalysis from "../components/ApiSummary/CheckCryptoTechnicalAnalysis.tsx";
 
 
 function ApiSummary() {
@@ -56,6 +57,13 @@ function ApiSummary() {
                     Wyniki z Giełd Kryptowalut
                 </Typography>
             </header>
+            {
+                cryptoApiList.map(value => value.crypto.shortName)
+                    .filter((value, index, self) => self.indexOf(value) === index)
+                    .map((value, index) => (
+                        <CheckCryptoTechnicalAnalysis key={index}  cryptoSymbol={value} />
+                    ))
+            }
             <Divider/>
             {
                 cryptoApiList.map(
