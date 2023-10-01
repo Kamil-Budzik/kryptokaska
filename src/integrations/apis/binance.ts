@@ -14,7 +14,8 @@ export class Binance implements Api {
             return {
                 OneDayPriceAverage: response.data.weightedAvgPrice,
                 OneDayVolumeAverage: response.data.volume,
-                Currency: currency
+                Currency: currency,
+                source: 'Binance'
             }
         } catch (error) {
             console.error('Error while getting currency data from Binance')
@@ -23,6 +24,6 @@ export class Binance implements Api {
     }
 
     private formatCurrencyId (currency: string): string {
-        return `${currency}-USDT`
+        return `${currency}USDT`
     }
 }

@@ -12,7 +12,8 @@ export class Coinbase implements Api {
             return {
                 OneDayPriceAverage: response.data.price,
                 OneDayVolumeAverage: response.data.volume,
-                Currency: currency
+                Currency: currency,
+                source: 'Coinbase'
             }
         } catch (error) {
             console.error('Error while getting currency data from Coinbase')

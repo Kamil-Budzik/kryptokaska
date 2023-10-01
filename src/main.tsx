@@ -32,7 +32,7 @@ const router = createHashRouter(
       <Route path="/new-report" element={<NewReport />} />
       <Route path="/pdf-summary" element={<PdfSummary />} />
       <Route path="/api-summary" element={<ApiSummary />} />
-      <Route path="/" element={<App  />} />
+      <Route path="/" element={<App />} />
     </>,
   ),
 );

@@ -17,12 +17,13 @@ export class PriceCalculator {
         const binanceData = await this.binanceApi.getCurrencyData(currency)
         const coinbaseData = await this.coinbaseApi.getCurrencyData(currency)
         const krakenData = await this.krakenApi.getCurrencyData(currency)
-        return [binanceData, coinbaseData, krakenData]
+        const datasets = [binanceData, coinbaseData, krakenData].filter(data => !!data)
+        // @ts-ignore
+        return this.weighedMeanCalculator.removeVolumeOutliers(datasets)
     }
 
     async calculateAveragePrice(datasets: CurrencyData[]): Promise<number> {
-        const datasetsWithoutOutliers = this.weighedMeanCalculator.removeVolumeOutliers(datasets)
-        const priceMeanUSD = this.weighedMeanCalculator.weightedPriceMean(datasetsWithoutOutliers)
+        const priceMeanUSD = this.weighedMeanCalculator.weightedPriceMean(datasets)
         return this.currencyConverter.convertToPln('USD', priceMeanUSD)
     }
 

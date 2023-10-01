@@ -9,6 +9,7 @@ export interface CurrencyData {
     OneDayPriceAverage: number
     OneDayVolumeAverage: number
     Currency: string
+    source?: string
 }
 
 export interface HistoricalData {
