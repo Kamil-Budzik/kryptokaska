@@ -6,7 +6,7 @@ export class CurrencyConversionUtil {
         USD: 'A',
     }
 
-  private nbpApi: NBPApi;
+  public nbpApi: NBPApi;
 
     constructor() {
         this.nbpApi = new NBPApi()

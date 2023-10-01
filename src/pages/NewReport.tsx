@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { CryptoEntry } from '../../electron/file-manager.ts';
 import { useDispatch } from 'react-redux';
 import { changeFormState } from '../store/new-report';
+import { changeFormState as changeCryptoFormState} from '../store//crypto';
 import { useNavigate } from 'react-router-dom';
 import { NBPApi } from "../integrations/apis/nbp.ts";
 import { ApiFacade } from "../integrations/interfaces/api.ts";
@@ -138,6 +139,9 @@ function NewReport() {
         console.log(cryptoSummaryData)
 
         const stockMarketData: StockMarketData[] = []
+
+        if(lastClickedButton === "manual") {
+
         let stockMarketCryptoData: StockMarketCurrencyData[] = []
 
         for (const value of APIS) {
@@ -179,6 +183,7 @@ function NewReport() {
 
             stockMarketCryptoData = []
         }
+      }
 
         const result: PDFSummaryData = {
             generalData: [
@@ -190,6 +195,8 @@ function NewReport() {
             cryptoSummaryData,
             stockMarketData
         };
+
+        dispatch(changeCryptoFormState(result as any))
         console.log(result)
     }
 

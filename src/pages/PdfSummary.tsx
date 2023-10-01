@@ -2,6 +2,7 @@ import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Typog
 import Wrapper from "../components/UI/Wrapper";
 import { CryptoEntry } from "../../electron/file-manager";
 import { NavLink as Link } from 'react-router-dom';
+import { useSelector } from "react-redux";
 
 
 interface GeneralData {
@@ -9,7 +10,7 @@ interface GeneralData {
     value: string;
 }
 
-interface CryptoSummaryData {
+export interface CryptoSummaryData {
     crypto: CryptoEntry;
     amount: number;
     sources: string[];
@@ -31,7 +32,7 @@ interface StockMarketDataEntry {
     totalValue: number
 }
 
-interface PDFSummaryData {
+export interface PDFSummaryData {
     generalData: GeneralData[];
     cryptoSummaryData: CryptoSummaryData[];
     stockMarketData?: StockMarketData[];
@@ -140,6 +141,10 @@ const exampleData: PDFSummaryData = {
     ]
 };
 function PdfSummary() {
+
+    const { crypto } = useSelector((state: { crypto: PDFSummaryData }) => state);
+    console.log(crypto);
+
     const getStockDataForUnavailable = () => (
         <>
             <TableCell align="left">Nie</TableCell>
@@ -188,7 +193,7 @@ function PdfSummary() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {exampleData.generalData.map((row) => (
+                        {crypto.generalData.map((row) => (
                             <TableRow
                                 key={row.name}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -219,7 +224,7 @@ function PdfSummary() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {exampleData.cryptoSummaryData.map((row) => (
+                        {crypto.cryptoSummaryData.map((row) => (
                             <TableRow
                                 key={row.crypto.fullName}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -240,7 +245,7 @@ function PdfSummary() {
             <Typography paddingTop="50px" component="h1" variant="h5">
                 Dane dotyczące giełd i kantorów
             </Typography>
-            {exampleData?.stockMarketData?.length || 0 > 0 &&
+            {crypto?.stockMarketData?.length || 0 > 0 &&
                 <TableContainer>
                     <Table aria-label="simple table">
                         <TableHead>
@@ -255,7 +260,7 @@ function PdfSummary() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {exampleData?.stockMarketData?.map((marketData) => (
+                            {crypto?.stockMarketData?.map((marketData) => (
                                 marketData.data.map((row, id) => (
                                     <TableRow
                                         key={marketData.marketName + row.crypto.fullName}

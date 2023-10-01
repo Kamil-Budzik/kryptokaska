@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import { Container } from '@mui/system';
 
-function Wrapper({ children }: { children: React.ReactNode }) {
+function Wrapper({ children, hideReturn }: { children: React.ReactNode, hideReturn?: boolean }) {
   const navigate = useNavigate();
 
   const handleGoBack = () => {
@@ -14,9 +14,10 @@ function Wrapper({ children }: { children: React.ReactNode }) {
   };
   return (
     <Container>
-      <nav>
-          <Button onClick={handleGoBack} sx={{ displayPrint: "none" }} variant="outlined">Return</Button>
-      </nav>
+      {!hideReturn && <nav>
+        <Button onClick={handleGoBack} sx={{ displayPrint: "none" }} variant="outlined">Return</Button>
+      </nav>}
+
       {children}
     </Container>
   );
