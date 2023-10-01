@@ -8,10 +8,10 @@ import { useEffect, useState } from 'react';
 import { CryptoEntry } from '../../electron/file-manager.ts';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { APIS } from '../integrations/axios/constants/Constants.ts';
 import {NBPApi} from "../integrations/apis/nbp.ts";
 import { changeFormState } from '../store/new-report';
 import {ApiFacade} from "../integrations/interfaces/api.ts";
+import {APIS, CRYPTO_CURRENCIES} from "../integrations/axios/constants/Constants.ts";
 
 interface GeneralData {
     name: string;
@@ -112,8 +112,8 @@ function NewReport() {
             cryptoSummaryData.push({
                 crypto: {
                     id: "-1",
-                    fullName: value.cryptoAsset,
-                    shortName: value.cryptoAsset
+                    fullName: CRYPTO_CURRENCIES.find(constCurr => constCurr.uiName === value.cryptoAsset)?.name ?? "not found",
+                    shortName: CRYPTO_CURRENCIES.find(constCurr => constCurr.uiName === value.cryptoAsset)?.shortcut ?? "not found",
                 },
                 amount: Number(value.amountOfCryptoAsset),
                 usdRate: await nbp.getNBPCurrencyExchangeRate("A", "USD"),
@@ -122,20 +122,31 @@ function NewReport() {
             })
         }))
 
-        const stockMarketData: StockMarketData[] = []
-        const stockMarketCryptoData: StockMarketCurrencyData[] = []
+        console.log('cryptoSummaryData')
+        console.log(cryptoSummaryData)
 
-        await Promise.all(APIS.map(async (value) => {
-            await Promise.all(data.cryptoAssets.map(async (crypto) => {
-                const rate = await cryptoApisFacade.callApi(value.name, crypto.cryptoAsset);
+        const stockMarketData: StockMarketData[] = []
+        let stockMarketCryptoData: StockMarketCurrencyData[] = []
+
+        for (const value of APIS) {
+
+            for (const crypto of data.cryptoAssets) {
+
+                console.log(value.name + " --- " + crypto.cryptoAsset + " --- " + stockMarketCryptoData.length)
+
+                const rate = await cryptoApisFacade.callApi(value.name,
+                    CRYPTO_CURRENCIES.find(constCurr=>
+                        constCurr.uiName === crypto.cryptoAsset)?.shortcut ?? "not found");
 
                 stockMarketCryptoData.push(
                     {
                         value: 1,
                         crypto: {
                             id: "-1",
-                            shortName: crypto.cryptoAsset,
-                            fullName: crypto.cryptoAsset
+                            shortName: CRYPTO_CURRENCIES.find(constCurr =>
+                                constCurr.uiName === crypto.cryptoAsset)?.shortcut ?? "not found",
+                            fullName: CRYPTO_CURRENCIES.find(constCurr =>
+                                constCurr.uiName === crypto.cryptoAsset)?.name ?? "not found"
                         },
                         currency: "USD",
                         isAvailable: !!rate,
@@ -143,16 +154,18 @@ function NewReport() {
                         plnCurrency: (Number(crypto.amountOfCryptoAsset) * (rate?.OneDayPriceAverage ?? -1)).toString()
                     }
                 )
-            }))
+            }
 
             stockMarketData.push(
                 {
                     marketName: value.name,
                     url: value.url,
-                    data: stockMarketCryptoData
+                    data: [ ...stockMarketCryptoData ]
                 }
             )
-        }))
+
+            stockMarketCryptoData = []
+        }
 
         const result: PDFSummaryData = {
             generalData: [
@@ -221,7 +234,7 @@ function NewReport() {
               fullWidth
               id="cryptoCurrencyOwnerData"
               label="Dane identyfikujące właściciela kryptowaluty"
-              {...register('cryptoCurrencyOwnerData', { required: true, pattern: /^[A-Za-z0-9.-]{1,100}$/i })}
+              {...register('cryptoCurrencyOwnerData', { required: true, pattern: /^[a-zA-Z0-9.\s]{1,100}$/i })}
             />
           </Grid>
           {fields.map((field, index) => (

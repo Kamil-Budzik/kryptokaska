@@ -14,7 +14,7 @@ export const APIS = [
 ]
 
 export const CRYPTO_CURRENCIES = [
-    { name: 'Bitcoin', shortcut: 'BTC', uiName: '', hdApiName: 'bitcoin' },
-    { name: 'Ethereum', shortcut: 'ETH', uiName: '', hdApiName: 'ethereum' },
-    { name: 'Manchester City Fan Token', shortcut: 'CITY', uiName: '', hdApiName: 'manchester city fan token' }
+    { name: 'Bitcoin', shortcut: 'BTC', uiName: 'Bitcoin (BTC)', hdApiName: 'bitcoin' },
+    { name: 'Ethereum', shortcut: 'ETH', uiName: 'Ethereum (ETH)', hdApiName: 'ethereum' },
+    { name: 'Manchester City Fan Token', shortcut: 'CITY', uiName: 'Manchester City Fan Token (CITY)', hdApiName: 'manchester city fan token' }
 ]
