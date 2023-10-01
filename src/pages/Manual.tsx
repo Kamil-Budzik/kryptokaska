@@ -6,16 +6,23 @@ import { Inputs as NewReportInputs } from './NewReport';
 import { Inputs } from '../components/manual/manual-subform';
 import { Button } from '@mui/material';
 import Wrapper from '../components/UI/Wrapper';
-import { changeFormState } from '../store/manual';
+import { changeFormState } from '../store/crypto';
+import { CryptoSummaryData, PDFSummaryData } from './PdfSummary';
+import { WeighedMeanCalculator } from '../utils/weightedMean/WeighedMeanCalculator';
+import { CurrencyConversionUtil } from '../utils/CurrencyConversionUtil';
+import { useNavigate } from 'react-router-dom';
 
 
 function Manual() {
   // const myData = useSelector((state) => state.myData);
-  const manualState = useSelector((state: { newReport: NewReportInputs }) => state.newReport);
+  const crypto = useSelector((state: { newReport: NewReportInputs, crypto: PDFSummaryData }) => state.crypto);
+  const manualState = useSelector((state: { newReport: NewReportInputs, crypto: PDFSummaryData }) => state.newReport);
   const [rateData, setRateData] = useState<Inputs[][]>([])
   const [errorMessage, setErrorMessage] = useState<string>()
   const [rate, _setRate] = useState<number>(4)
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
 
   const handleSubmit = (id: number) => (input: Inputs[]) => {
     console.log(id, input, rateData);
@@ -27,7 +34,9 @@ function Manual() {
   };
 
   useEffect(() => {
-    console.log(manualState);
+    (async () => {
+      _setRate(await new CurrencyConversionUtil().nbpApi.getNBPCurrencyExchangeRate('A', "USD"));
+    })
   }, []);
 
   const handleButtonClick = () => {
@@ -49,11 +58,36 @@ function Manual() {
       return innerRateData;
     }));
 
-    console.log(newData);
+    const summary = newData.map<CryptoSummaryData>((rateData, index) => {
+      const cryptoSummary = {
+        crypto: {
+          fullName: manualState.cryptoAssets[index].cryptoAsset,
+        },
+        amount: +manualState.cryptoAssets[index].amountOfCryptoAsset,
+        sources: rateData.map((rateData) => rateData.url),
+        usdRate: rate,
+        averageValue: new WeighedMeanCalculator().weightedPriceMean(rateData.map(data => ({
+          OneDayPriceAverage: data.plnAmount || data.amount,
+          OneDayVolumeAverage: data.volume,
+          Currency: ""
+        }))),
+      }
+
+      return cryptoSummary as CryptoSummaryData;
+    })
+    console.log({
+      ...crypto,
+      cryptoSummaryData: summary,
+      stockMarketData: [],
+    });
 
     dispatch(changeFormState({
-      states: newData
+      ...crypto,
+      cryptoSummaryData: summary,
+      stockMarketData: [],
     }));
+
+    navigate("/pdf-summary")
   }
 
   // TODO: add styles and proper validation
