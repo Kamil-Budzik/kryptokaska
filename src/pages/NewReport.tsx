@@ -190,6 +190,8 @@ function NewReport() {
             cryptoSummaryData,
             stockMarketData
         };
+
+        result.stockMarketData.filter(data => data.data.forEach(cryptoData => cryptoData.rateInUSD !== -1))
         console.log(result)
     }
 
