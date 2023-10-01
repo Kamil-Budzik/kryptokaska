@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
 import { CryptoEntry } from '../../electron/file-manager.ts';
 import { useDispatch } from 'react-redux';
 import { changeFormState } from '../store/new-report';
-import { Link } from 'react-router-dom';
 
 type Inputs = {
   enforcementAuthority: string;
@@ -23,6 +22,7 @@ const INVALID_INPUT = 'Niewłaściwy format';
 function NewReport() {
   const dispatch = useDispatch();
   const [headquarters, setHeadquarters] = useState<string[]>();
+  const [lastClickedButton, setLastClickedButton] = useState<string>();
   const [availableCryptoCurrencies, setAvailableCryptoCurrencies] =
     useState<CryptoEntry[]>();
   const {
@@ -57,6 +57,8 @@ function NewReport() {
     name: 'cryptoAssets',
   });
   const onSubmit: SubmitHandler<Inputs> = (data) => {
+    console.log(data);
+    console.log(lastClickedButton);
     dispatch(changeFormState(data));
   };
 
@@ -89,8 +91,10 @@ function NewReport() {
                   fullWidth
                   id="enforcementAuthority"
                   label="Nazwa organu egzekucyjnego"
-                  {...register('enforcementAuthority', { required: true,
-                  validate: value => headquarters?.includes(value) || INVALID_INPUT})}
+                  {...register('enforcementAuthority', {
+                    required: true,
+                    validate: value => headquarters?.includes(value) || INVALID_INPUT
+                  })}
                 />
               )}
             />
@@ -137,7 +141,7 @@ function NewReport() {
                       required
                       fullWidth
                       label="Nazwa Kryptoaktywa"
-                      {...register(`cryptoAssets.${index}.cryptoAsset`, {required: true})}
+                      {...register(`cryptoAssets.${index}.cryptoAsset`, { required: true })}
                     />
                   )}
                 />
@@ -148,7 +152,7 @@ function NewReport() {
                   fullWidth
                   label="Ilość kryptoaktywów"
                   defaultValue={field.amountOfCryptoAsset}
-                  {...register(`cryptoAssets.${index}.amountOfCryptoAsset`, {required: true, pattern: /^[0-9]+$/i })}
+                  {...register(`cryptoAssets.${index}.amountOfCryptoAsset`, { required: true, pattern: /^[0-9]+$/i })}
                 />
               </Grid>
               {fields.length > 1 && (
@@ -182,12 +186,20 @@ function NewReport() {
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
+          onClick={() => setLastClickedButton("generate")}
           style={{ backgroundColor: 'green', color: 'white' }}
         >
           Generuj Raport
         </Button>
-        <Button>
-          <Link to="/manual">Wprowadz dane recznie</Link>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
+          onClick={() => setLastClickedButton("manual")}
+          style={{ backgroundColor: 'blue', color: 'white' }}
+        >
+          Wprowadz dane recznie
         </Button>
       </Box>
     </Wrapper>
