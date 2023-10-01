@@ -7,48 +7,48 @@ import Wrapper from '../components/UI/Wrapper';
 import { useEffect, useState } from 'react';
 import { CryptoEntry } from '../../electron/file-manager.ts';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { APIS } from '../integrations/axios/constants/Constants.ts';
-import {NBPApi} from "../integrations/apis/nbp.ts";
 import { changeFormState } from '../store/new-report';
-import {ApiFacade} from "../integrations/interfaces/api.ts";
+import { Link, useNavigate, useNavigation } from 'react-router-dom';
+import { APIS } from '../integrations/axios/constants/Constants.ts';
+import { NBPApi } from "../integrations/apis/nbp.ts";
+import { ApiFacade } from "../integrations/interfaces/api.ts";
 
 interface GeneralData {
-    name: string;
-    value: string;
+  name: string;
+  value: string;
 }
 
 interface CryptoSummaryData {
-    crypto: CryptoEntry;
-    amount: number;
-    sources: string[];
-    usdRate: number;
-    averageValue: number;
+  crypto: CryptoEntry;
+  amount: number;
+  sources: string[];
+  usdRate: number;
+  averageValue: number;
 }
 
 interface StockMarketCurrencyData {
-    crypto: CryptoEntry;
-    isAvailable: boolean;
-    // wartosc wedlug gieldy
-    rate: number;
-    // waluta pln/uds
-    currency: string;
-    // wartosc w zlotowkach (kurs)
-    plnCurrency: string;
-    // wartosc waluty w przeliczneiu na zlotowki w sumie
-    value: number;
+  crypto: CryptoEntry;
+  isAvailable: boolean;
+  // wartosc wedlug gieldy
+  rate: number;
+  // waluta pln/uds
+  currency: string;
+  // wartosc w zlotowkach (kurs)
+  plnCurrency: string;
+  // wartosc waluty w przeliczneiu na zlotowki w sumie
+  value: number;
 }
 
 interface StockMarketData {
-    marketName: string;
-    url: string;
-    data: StockMarketCurrencyData[];
+  marketName: string;
+  url: string;
+  data: StockMarketCurrencyData[];
 }
 
 interface PDFSummaryData {
-    generalData: GeneralData[];
-    cryptoSummaryData: CryptoSummaryData[];
-    stockMarketData: StockMarketData[];
+  generalData: GeneralData[];
+  cryptoSummaryData: CryptoSummaryData[];
+  stockMarketData: StockMarketData[];
 }
 
 type Inputs = {
@@ -63,7 +63,10 @@ const INVALID_INPUT = 'Niewłaściwy format';
 
 function NewReport() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
   const [headquarters, setHeadquarters] = useState<string[]>();
+  const [lastClickedButton, setLastClickedButton] = useState<string>();
   const [availableCryptoCurrencies, setAvailableCryptoCurrencies] =
     useState<CryptoEntry[]>();
   const {
@@ -93,79 +96,85 @@ function NewReport() {
     });
   }, []);
 
-    const {fields, append, remove} = useFieldArray({
-        control,
-        name: 'cryptoAssets',
-    });
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'cryptoAssets',
+  });
 
-    const onSubmit: SubmitHandler<Inputs> = async (data) => {
-
-        dispatch(changeFormState(data));
-
-        const nbp = new NBPApi()
-        const cryptoApisFacade = new ApiFacade()
-
-        const currentDate = new Date()
-
-        const cryptoSummaryData: CryptoSummaryData[] = []
-        await Promise.all(data.cryptoAssets.map(async value => {
-            cryptoSummaryData.push({
-                crypto: {
-                    id: "-1",
-                    fullName: value.cryptoAsset,
-                    shortName: value.cryptoAsset
-                },
-                amount: Number(value.amountOfCryptoAsset),
-                usdRate: await nbp.getNBPCurrencyExchangeRate("A", "USD"),
-                sources: APIS.map(api => api.name),
-                averageValue: -1
-            })
-        }))
-
-        const stockMarketData: StockMarketData[] = []
-        const stockMarketCryptoData: StockMarketCurrencyData[] = []
-
-        await Promise.all(APIS.map(async (value) => {
-            await Promise.all(data.cryptoAssets.map(async (crypto) => {
-                const rate = await cryptoApisFacade.callApi(value.name, crypto.cryptoAsset);
-
-                stockMarketCryptoData.push(
-                    {
-                        value: 1,
-                        crypto: {
-                            id: "-1",
-                            shortName: crypto.cryptoAsset,
-                            fullName: crypto.cryptoAsset
-                        },
-                        currency: "USD",
-                        isAvailable: !!rate,
-                        rate: rate?.OneDayPriceAverage ?? -1,
-                        plnCurrency: (Number(crypto.amountOfCryptoAsset) * (rate?.OneDayPriceAverage ?? -1)).toString()
-                    }
-                )
-            }))
-
-            stockMarketData.push(
-                {
-                    marketName: value.name,
-                    url: value.url,
-                    data: stockMarketCryptoData
-                }
-            )
-        }))
-
-        const result: PDFSummaryData = {
-            generalData: [
-                { name: "id", value: currentDate.getTime().toString() + "-" + data.caseNumber },
-                { name: "Data utworzenia", value: currentDate.toLocaleDateString() },
-                { name: "Numer sprawy", value: data.caseNumber },
-                { name: "Dane właściciela", value: data.cryptoCurrencyOwnerData }
-            ],
-            cryptoSummaryData,
-            stockMarketData
-        };
-        console.log(result)
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    dispatch(changeFormState(data));
+    if (lastClickedButton === "generate") {
+      navigate("/api-summary")
     }
+    else if (lastClickedButton === "manual") {
+      navigate("/manual")
+    }
+    // const nbp = new NBPApi()
+    // const cryptoApisFacade = new ApiFacade()
+
+    // const currentDate = new Date()
+
+    // const cryptoSummaryData: CryptoSummaryData[] = []
+    // await Promise.all(data.cryptoAssets.map(async value => {
+    //     cryptoSummaryData.push({
+    //         crypto: {
+    //             id: "-1",
+    //             fullName: value.cryptoAsset,
+    //             shortName: value.cryptoAsset
+    //         },
+    //         amount: Number(value.amountOfCryptoAsset),
+    //         usdRate: await nbp.getNBPCurrencyExchangeRate("A", "USD"),
+    //         sources: APIS.map(api => api.name),
+    //         averageValue: -1
+    //     })
+    // }))
+
+    // const stockMarketData: StockMarketData[] = []
+    // const stockMarketCryptoData: StockMarketCurrencyData[] = []
+
+    // await Promise.all(APIS.map(async (value) => {
+    //     await Promise.all(data.cryptoAssets.map(async (crypto) => {
+    //         const rate = await cryptoApisFacade.callApi(value.name, crypto.cryptoAsset);
+
+    //         stockMarketCryptoData.push(
+    //             {
+    //                 value: 1,
+    //                 crypto: {
+    //                     id: "-1",
+    //                     shortName: crypto.cryptoAsset,
+    //                     fullName: crypto.cryptoAsset
+    //                 },
+    //                 currency: "USD",
+    //                 isAvailable: !!rate,
+    //                 rate: rate?.OneDayPriceAverage ?? -1,
+    //                 plnCurrency: (Number(crypto.amountOfCryptoAsset) * (rate?.OneDayPriceAverage ?? -1)).toString()
+    //             }
+    //         )
+    //     }))
+
+    //     stockMarketData.push(
+    //         {
+    //             marketName: value.name,
+    //             url: value.url,
+    //             data: stockMarketCryptoData
+    //         }
+    //     )
+    // }))
+
+    // const result: PDFSummaryData = {
+    //     generalData: [
+    //         { name: "id", value: currentDate.getTime().toString() + "-" + data.caseNumber },
+    //         { name: "Data utworzenia", value: currentDate.toLocaleDateString() },
+    //         { name: "Numer sprawy", value: data.caseNumber },
+    //         { name: "Dane właściciela", value: data.cryptoCurrencyOwnerData }
+    //     ],
+    //     cryptoSummaryData,
+    //     stockMarketData
+    // };
+    // console.log(result)
+  }
+
+
 
   return (
     <Wrapper>
@@ -196,8 +205,10 @@ function NewReport() {
                   fullWidth
                   id="enforcementAuthority"
                   label="Nazwa organu egzekucyjnego"
-                  {...register('enforcementAuthority', { required: true,
-                  validate: value => headquarters?.includes(value) || INVALID_INPUT})}
+                  {...register('enforcementAuthority', {
+                    required: true,
+                    validate: value => headquarters?.includes(value) || INVALID_INPUT
+                  })}
                 />
               )}
             />
@@ -244,7 +255,7 @@ function NewReport() {
                       required
                       fullWidth
                       label="Nazwa Kryptoaktywa"
-                      {...register(`cryptoAssets.${index}.cryptoAsset`, {required: true})}
+                      {...register(`cryptoAssets.${index}.cryptoAsset`, { required: true })}
                     />
                   )}
                 />
@@ -255,7 +266,7 @@ function NewReport() {
                   fullWidth
                   label="Ilość kryptoaktywów"
                   defaultValue={field.amountOfCryptoAsset}
-                  {...register(`cryptoAssets.${index}.amountOfCryptoAsset`, {required: true, pattern: /^[0-9]+$/i })}
+                  {...register(`cryptoAssets.${index}.amountOfCryptoAsset`, { required: true, pattern: /^[0-9]+$/i })}
                 />
               </Grid>
               {fields.length > 1 && (
@@ -289,12 +300,20 @@ function NewReport() {
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
+          onClick={() => setLastClickedButton("generate")}
           style={{ backgroundColor: 'green', color: 'white' }}
         >
           Generuj Raport
         </Button>
-        <Button>
-          <Link to="/manual">Wprowadz dane recznie</Link>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
+          onClick={() => setLastClickedButton("manual")}
+          style={{ backgroundColor: 'blue', color: 'white' }}
+        >
+          Wprowadz dane recznie
         </Button>
       </Box>
     </Wrapper>

@@ -1,6 +1,5 @@
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Typography, Divider, Button } from "@mui/material";
 import Wrapper from "../components/UI/Wrapper";
-import { Container } from "@mui/system";
 import { CryptoEntry } from "../../electron/file-manager";
 import { NavLink as Link } from 'react-router-dom';
 
@@ -171,7 +170,6 @@ function PdfSummary() {
     };
 
     return (
-        <Container>
             <Wrapper>
                 <header>
                     <Typography component="h1" variant="h5" align="center">
@@ -315,7 +313,6 @@ function PdfSummary() {
                     </Button>
                 </Link>
             </Wrapper>
-        </Container>
     )
 }
 
