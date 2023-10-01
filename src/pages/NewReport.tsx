@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { CryptoEntry } from '../../electron/file-manager.ts';
 import { useDispatch } from 'react-redux';
 import { changeFormState } from '../store/new-report';
+import { Link } from 'react-router-dom';
 
 type Inputs = {
   enforcementAuthority: string;
@@ -186,6 +187,9 @@ function NewReport() {
           style={{ backgroundColor: 'green', color: 'white' }}
         >
           Generuj Raport
+        </Button>
+        <Button>
+          <Link to="/manual">Wprowadz dane recznie</Link>
         </Button>
       </Box>
     </Wrapper>
