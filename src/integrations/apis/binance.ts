@@ -1,16 +1,14 @@
 import {Api, CurrencyData} from "../interfaces/api.ts";
 import {AxiosUtil} from "../axios/Axios.ts";
-import {Urls} from "../axios/constants/Urls.ts";
+import {Urls} from "../axios/constants/Constants.ts";
 
 export class Binance implements Api {
 
-    constructor(private readonly client: AxiosUtil) {
-    }
     async getCurrencyData(currency: string): Promise<CurrencyData | undefined>  {
         const productId = this.formatCurrencyId(currency)
         const url = Urls.BINANCE_BASE_URL + `/api/v3/avgPrice`
         try {
-            const response = await this.client.getCall( url,{
+            const response = await AxiosUtil.getCall( url,{
                 symbol: productId
             })
             return {

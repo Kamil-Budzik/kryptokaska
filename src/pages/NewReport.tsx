@@ -7,8 +7,49 @@ import Wrapper from '../components/UI/Wrapper';
 import { useEffect, useState } from 'react';
 import { CryptoEntry } from '../../electron/file-manager.ts';
 import { useDispatch } from 'react-redux';
-import { changeFormState } from '../store/new-report';
 import { Link } from 'react-router-dom';
+import { APIS } from '../integrations/axios/constants/Constants.ts';
+import {NBPApi} from "../integrations/apis/nbp.ts";
+import { changeFormState } from '../store/new-report';
+import {ApiFacade} from "../integrations/interfaces/api.ts";
+
+interface GeneralData {
+    name: string;
+    value: string;
+}
+
+interface CryptoSummaryData {
+    crypto: CryptoEntry;
+    amount: number;
+    sources: string[];
+    usdRate: number;
+    averageValue: number;
+}
+
+interface StockMarketCurrencyData {
+    crypto: CryptoEntry;
+    isAvailable: boolean;
+    // wartosc wedlug gieldy
+    rate: number;
+    // waluta pln/uds
+    currency: string;
+    // wartosc w zlotowkach (kurs)
+    plnCurrency: string;
+    // wartosc waluty w przeliczneiu na zlotowki w sumie
+    value: number;
+}
+
+interface StockMarketData {
+    marketName: string;
+    url: string;
+    data: StockMarketCurrencyData[];
+}
+
+interface PDFSummaryData {
+    generalData: GeneralData[];
+    cryptoSummaryData: CryptoSummaryData[];
+    stockMarketData: StockMarketData[];
+}
 
 type Inputs = {
   enforcementAuthority: string;
@@ -52,13 +93,79 @@ function NewReport() {
     });
   }, []);
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'cryptoAssets',
-  });
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    dispatch(changeFormState(data));
-  };
+    const {fields, append, remove} = useFieldArray({
+        control,
+        name: 'cryptoAssets',
+    });
+
+    const onSubmit: SubmitHandler<Inputs> = async (data) => {
+
+        dispatch(changeFormState(data));
+
+        const nbp = new NBPApi()
+        const cryptoApisFacade = new ApiFacade()
+
+        const currentDate = new Date()
+
+        const cryptoSummaryData: CryptoSummaryData[] = []
+        await Promise.all(data.cryptoAssets.map(async value => {
+            cryptoSummaryData.push({
+                crypto: {
+                    id: "-1",
+                    fullName: value.cryptoAsset,
+                    shortName: value.cryptoAsset
+                },
+                amount: Number(value.amountOfCryptoAsset),
+                usdRate: await nbp.getNBPCurrencyExchangeRate("A", "USD"),
+                sources: APIS.map(api => api.name),
+                averageValue: -1
+            })
+        }))
+
+        const stockMarketData: StockMarketData[] = []
+        const stockMarketCryptoData: StockMarketCurrencyData[] = []
+
+        await Promise.all(APIS.map(async (value) => {
+            await Promise.all(data.cryptoAssets.map(async (crypto) => {
+                const rate = await cryptoApisFacade.callApi(value.name, crypto.cryptoAsset);
+
+                stockMarketCryptoData.push(
+                    {
+                        value: 1,
+                        crypto: {
+                            id: "-1",
+                            shortName: crypto.cryptoAsset,
+                            fullName: crypto.cryptoAsset
+                        },
+                        currency: "USD",
+                        isAvailable: !!rate,
+                        rate: rate?.OneDayPriceAverage ?? -1,
+                        plnCurrency: (Number(crypto.amountOfCryptoAsset) * (rate?.OneDayPriceAverage ?? -1)).toString()
+                    }
+                )
+            }))
+
+            stockMarketData.push(
+                {
+                    marketName: value.name,
+                    url: value.url,
+                    data: stockMarketCryptoData
+                }
+            )
+        }))
+
+        const result: PDFSummaryData = {
+            generalData: [
+                { name: "id", value: currentDate.getTime().toString() + "-" + data.caseNumber },
+                { name: "Data utworzenia", value: currentDate.toLocaleDateString() },
+                { name: "Numer sprawy", value: data.caseNumber },
+                { name: "Dane właściciela", value: data.cryptoCurrencyOwnerData }
+            ],
+            cryptoSummaryData,
+            stockMarketData
+        };
+        console.log(result)
+    }
 
   return (
     <Wrapper>
