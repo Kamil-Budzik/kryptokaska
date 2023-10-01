@@ -1,11 +1,8 @@
 import {AxiosUtil} from "../axios/Axios.ts";
-import {Urls} from "../axios/constants/Urls.ts";
 import {HistoricalData} from "../interfaces/api.ts";
+import {Urls} from "../axios/constants/Constants.ts";
 
 export class CoinGecko {
-
-    constructor(private readonly client: AxiosUtil) {
-    }
 
     async getHistoricalData(currency: string, weeks: number): Promise<HistoricalData> {
         const url = Urls.COINGECKO_BASE_URL + '/' + currency + '/history'
@@ -13,7 +10,7 @@ export class CoinGecko {
 
         const promises = dates.map(async date => {
             try {
-                const response = await this.client.getCall(url, {
+                const response = await AxiosUtil.getCall(url, {
                     localization: 'false',
                     date: date
                 });

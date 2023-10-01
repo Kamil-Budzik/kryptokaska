@@ -276,7 +276,22 @@ function PdfSummary() {
                     Metodologia
                 </Typography>
                 <Typography component="p" variant="body1">
-                    Brak XDD
+                    W celu precyzyjnego ustalenia kursu wymiany danego kryptoaktywa
+                    zastosowano kilkustiopniowy proces.<br />
+                    1. W pierwszym kroku pobrane zostają średnie kursy oraz obroty z trzech giełd
+                    kryptowalutowych. Pobierany jest średni kurs sprzedaży z ostatnich 24 godzin
+                    oraz obrót danym kryptoaktywem przez 24 godziny na danej giełdzie.<br />
+                    2. Następnie przeprowadzana jest analiza statystyczna, w celu wykrycia
+                    tzw. outliers, czyli wartości odstających od normy. W tym kroku chcemy
+                    wykryć giełdy, na których obrót danym kryptoaktywem jest zauważalnie mniejszy,
+                    od pozostałych. Wykonywane jest to poprzez obliczenie odchylenia standardowego,
+                    i średniej, a następnie wszystkie wartości, które są poniżej wartości różnicy pomiędzy
+                    średnią a odchyleniem standardowym zostają odrzucone jako outliers.<br />
+                    3. Trzeci krok pozwala użytkownikowi na dopisanie dodatkowych, nieuwzględnionych w
+                    aplikacji giełd oraz ich kursów.<br />
+                    4. W ostatnim kroku liczona jest średnia ważona kursu kryptoaktywa. Średnia ważona
+                    liczona jest w oparciu o średni kurs sprzedaży z ostatnich 24 godzin oraz obrót
+                    dokonany przez ostatnie 24h danym kryptoaktywem.
                 </Typography>
                 <Button
                     fullWidth

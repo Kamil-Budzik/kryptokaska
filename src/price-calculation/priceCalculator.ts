@@ -1,4 +1,3 @@
-import {AxiosUtil} from "../integrations/axios/Axios.ts";
 import {Binance} from "../integrations/apis/binance.ts";
 import {Coinbase} from "../integrations/apis/coinbase.ts";
 import {Kraken} from "../integrations/apis/kraken.ts";
@@ -8,12 +7,11 @@ import { CurrencyConversionUtil } from '../utils/CurrencyConversionUtil.ts';
 
 export class PriceCalculator {
 
-    axiosClient = new AxiosUtil()
-    binanceApi = new Binance(this.axiosClient)
-    coinbaseApi = new Coinbase(this.axiosClient)
-    krakenApi = new Kraken(this.axiosClient)
+    binanceApi = new Binance()
+    coinbaseApi = new Coinbase()
+    krakenApi = new Kraken()
     weighedMeanCalculator = new WeighedMeanCalculator()
-    currencyConverter = new CurrencyConversionUtil(this.axiosClient)
+    currencyConverter = new CurrencyConversionUtil()
 
     async getCalculationData(currency: string): Promise<(CurrencyData | undefined)[]> {
         const binanceData = await this.binanceApi.getCurrencyData(currency)
