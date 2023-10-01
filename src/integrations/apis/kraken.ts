@@ -14,7 +14,8 @@ export class Kraken implements Api {
             return {
                 OneDayPriceAverage: response.data.result[productId].p[1],
                 OneDayVolumeAverage: response.data.result[productId].v[1],
-                Currency: currency
+                Currency: currency,
+                source: 'Kraken'
             }
         } catch (error) {
             console.error('Error while getting currency data from Kraken')
