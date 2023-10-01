@@ -8,10 +8,7 @@ import { useEffect, useState } from 'react';
 import { CryptoEntry } from '../../electron/file-manager.ts';
 import { useDispatch } from 'react-redux';
 import { changeFormState } from '../store/new-report';
-import { Link, useNavigate, useNavigation } from 'react-router-dom';
-import { APIS } from '../integrations/axios/constants/Constants.ts';
-import { NBPApi } from "../integrations/apis/nbp.ts";
-import { ApiFacade } from "../integrations/interfaces/api.ts";
+import { useNavigate } from 'react-router-dom';
 
 interface GeneralData {
   name: string;
@@ -45,13 +42,14 @@ interface StockMarketData {
   data: StockMarketCurrencyData[];
 }
 
-interface PDFSummaryData {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export interface PDFSummaryData {
   generalData: GeneralData[];
   cryptoSummaryData: CryptoSummaryData[];
   stockMarketData: StockMarketData[];
 }
 
-type Inputs = {
+export type Inputs = {
   enforcementAuthority: string;
   caseNumber: string;
   cryptoCurrencyOwnerData: string;
@@ -264,6 +262,7 @@ function NewReport() {
                 <TextField
                   required
                   fullWidth
+                  type="number"
                   label="Ilość kryptoaktywów"
                   defaultValue={field.amountOfCryptoAsset}
                   {...register(`cryptoAssets.${index}.amountOfCryptoAsset`, { required: true, pattern: /^[0-9]+$/i })}

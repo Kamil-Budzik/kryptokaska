@@ -34,7 +34,7 @@ interface StockMarketDataEntry {
 interface PDFSummaryData {
     generalData: GeneralData[];
     cryptoSummaryData: CryptoSummaryData[];
-    stockMarketData: StockMarketData[];
+    stockMarketData?: StockMarketData[];
 }
 
 //Prepare example data for PDFSummaryData
@@ -170,76 +170,77 @@ function PdfSummary() {
     };
 
     return (
-            <Wrapper>
-                <header>
-                    <Typography component="h1" variant="h5" align="center">
-                        Szacowanie wartości kryptoaktywów
-                    </Typography>
-                </header>
-                <Typography component="h1" variant="h5">
-                    Dane ogólne
+        <Wrapper>
+            <header>
+                <Typography component="h1" variant="h5" align="center">
+                    Szacowanie wartości kryptoaktywów
                 </Typography>
-                <TableContainer>
-                    <Table aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Nazwa pola</TableCell>
-                                <TableCell align="left">Wartość</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {exampleData.generalData.map((row) => (
-                                <TableRow
-                                    key={row.name}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                    <TableCell component="th" scope="row">
-                                        {row.name}
-                                    </TableCell>
-                                    <TableCell align="left">{row.value}</TableCell>
+            </header>
+            <Typography component="h1" variant="h5">
+                Dane ogólne
+            </Typography>
+            <TableContainer>
+                <Table aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Nazwa pola</TableCell>
+                            <TableCell align="left">Wartość</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {exampleData.generalData.map((row) => (
+                            <TableRow
+                                key={row.name}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            >
+                                <TableCell component="th" scope="row">
+                                    {row.name}
+                                </TableCell>
+                                <TableCell align="left">{row.value}</TableCell>
 
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <Divider />
-                <Typography paddingTop="50px" component="h1" variant="h5">
-                    Wartości kryptoaktywów
-                </Typography>
-                <TableContainer>
-                    <Table aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Nazwa kryptoaktywa</TableCell>
-                                <TableCell align="left">Ilość</TableCell>
-                                <TableCell align="left">Średnia wartość</TableCell>
-                                <TableCell align="left">Źródła</TableCell>
-                                <TableCell align="left">Kurs USD według NBP</TableCell>
                             </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {exampleData.cryptoSummaryData.map((row) => (
-                                <TableRow
-                                    key={row.crypto.fullName}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                    <TableCell component="th" scope="row">
-                                        {row.crypto.fullName}
-                                    </TableCell>
-                                    <TableCell align="left">{row.amount}</TableCell>
-                                    <TableCell align="left">{row.averageValue}</TableCell>
-                                    <TableCell align="left">{row.sources.join(", ")}</TableCell>
-                                    <TableCell align="left">{row.usdRate}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <Divider />
-                <Typography paddingTop="50px" component="h1" variant="h5">
-                    Dane dotyczące giełd i kantorów
-                </Typography>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <Divider />
+            <Typography paddingTop="50px" component="h1" variant="h5">
+                Wartości kryptoaktywów
+            </Typography>
+            <TableContainer>
+                <Table aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Nazwa kryptoaktywa</TableCell>
+                            <TableCell align="left">Ilość</TableCell>
+                            <TableCell align="left">Średnia wartość</TableCell>
+                            <TableCell align="left">Źródła</TableCell>
+                            <TableCell align="left">Kurs USD według NBP</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {exampleData.cryptoSummaryData.map((row) => (
+                            <TableRow
+                                key={row.crypto.fullName}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            >
+                                <TableCell component="th" scope="row">
+                                    {row.crypto.fullName}
+                                </TableCell>
+                                <TableCell align="left">{row.amount}</TableCell>
+                                <TableCell align="left">{row.averageValue}</TableCell>
+                                <TableCell align="left">{row.sources.join(", ")}</TableCell>
+                                <TableCell align="left">{row.usdRate}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <Divider />
+            <Typography paddingTop="50px" component="h1" variant="h5">
+                Dane dotyczące giełd i kantorów
+            </Typography>
+            {exampleData?.stockMarketData?.length || 0 > 0 &&
                 <TableContainer>
                     <Table aria-label="simple table">
                         <TableHead>
@@ -254,7 +255,7 @@ function PdfSummary() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {exampleData.stockMarketData.map((marketData) => (
+                            {exampleData?.stockMarketData?.map((marketData) => (
                                 marketData.data.map((row, id) => (
                                     <TableRow
                                         key={marketData.marketName + row.crypto.fullName}
@@ -272,47 +273,49 @@ function PdfSummary() {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                <Typography paddingTop="50px" component="h1" variant="h5">
-                    Metodologia
-                </Typography>
-                <Typography component="p" variant="body1">
-                    W celu precyzyjnego ustalenia kursu wymiany danego kryptoaktywa
-                    zastosowano kilkustiopniowy proces.<br />
-                    1. W pierwszym kroku pobrane zostają średnie kursy oraz obroty z trzech giełd
-                    kryptowalutowych. Pobierany jest średni kurs sprzedaży z ostatnich 24 godzin
-                    oraz obrót danym kryptoaktywem przez 24 godziny na danej giełdzie.<br />
-                    2. Następnie przeprowadzana jest analiza statystyczna, w celu wykrycia
-                    tzw. outliers, czyli wartości odstających od normy. W tym kroku chcemy
-                    wykryć giełdy, na których obrót danym kryptoaktywem jest zauważalnie mniejszy,
-                    od pozostałych. Wykonywane jest to poprzez obliczenie odchylenia standardowego,
-                    i średniej, a następnie wszystkie wartości, które są poniżej wartości różnicy pomiędzy
-                    średnią a odchyleniem standardowym zostają odrzucone jako outliers.<br />
-                    3. Trzeci krok pozwala użytkownikowi na dopisanie dodatkowych, nieuwzględnionych w
-                    aplikacji giełd oraz ich kursów.<br />
-                    4. W ostatnim kroku liczona jest średnia ważona kursu kryptoaktywa. Średnia ważona
-                    liczona jest w oparciu o średni kurs sprzedaży z ostatnich 24 godzin oraz obrót
-                    dokonany przez ostatnie 24h danym kryptoaktywem.
-                </Typography>
+            }
+
+            <Typography paddingTop="50px" component="h1" variant="h5">
+                Metodologia
+            </Typography>
+            <Typography component="p" variant="body1">
+                W celu precyzyjnego ustalenia kursu wymiany danego kryptoaktywa
+                zastosowano kilkustiopniowy proces.<br />
+                1. W pierwszym kroku pobrane zostają średnie kursy oraz obroty z trzech giełd
+                kryptowalutowych. Pobierany jest średni kurs sprzedaży z ostatnich 24 godzin
+                oraz obrót danym kryptoaktywem przez 24 godziny na danej giełdzie.<br />
+                2. Następnie przeprowadzana jest analiza statystyczna, w celu wykrycia
+                tzw. outliers, czyli wartości odstających od normy. W tym kroku chcemy
+                wykryć giełdy, na których obrót danym kryptoaktywem jest zauważalnie mniejszy,
+                od pozostałych. Wykonywane jest to poprzez obliczenie odchylenia standardowego,
+                i średniej, a następnie wszystkie wartości, które są poniżej wartości różnicy pomiędzy
+                średnią a odchyleniem standardowym zostają odrzucone jako outliers.<br />
+                3. Trzeci krok pozwala użytkownikowi na dopisanie dodatkowych, nieuwzględnionych w
+                aplikacji giełd oraz ich kursów.<br />
+                4. W ostatnim kroku liczona jest średnia ważona kursu kryptoaktywa. Średnia ważona
+                liczona jest w oparciu o średni kurs sprzedaży z ostatnich 24 godzin oraz obrót
+                dokonany przez ostatnie 24h danym kryptoaktywem.
+            </Typography>
+            <Button
+                fullWidth
+                onClick={saveFile}
+                variant="contained"
+                sx={{ mt: 3, mb: 2, displayPrint: "none" }}
+                style={{ backgroundColor: 'green', color: 'white' }}
+            >
+                Zapisz do PDF
+            </Button>
+            <Link to="/">
                 <Button
                     fullWidth
-                    onClick={saveFile}
                     variant="contained"
                     sx={{ mt: 3, mb: 2, displayPrint: "none" }}
-                    style={{ backgroundColor: 'green', color: 'white' }}
+                    style={{ backgroundColor: 'red', color: 'white' }}
                 >
-                    Zapisz do PDF
+                    Anuluj
                 </Button>
-                <Link to="/">
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2, displayPrint: "none" }}
-                        style={{ backgroundColor: 'red', color: 'white' }}
-                    >
-                        Anuluj
-                    </Button>
-                </Link>
-            </Wrapper>
+            </Link>
+        </Wrapper>
     )
 }
 
