@@ -60,11 +60,13 @@ export const addEventListeners = (
     event.reply('headquarters-loaded', headquarters);
   });
 
-  ipcMain.on('print-to-pdf', async (event) => {
+  ipcMain.on('print-to-pdf', async (event, id) => {
     try {
+      const currentDate = new Intl.DateTimeFormat('pl-PL').format(new Date())
+
       const pathToSave = await dialog.showSaveDialog(window, {
         title: 'Zapisz raport',
-        defaultPath: 'raport.pdf',
+        defaultPath: `raport-${currentDate}-${id}.pdf`,
         filters: [{ name: 'PDF Files', extensions: ['pdf'] }],
       });
 

@@ -166,7 +166,8 @@ function PdfSummary() {
     }
 
     const saveFile = () => {
-        window.ipcRenderer.send("print-to-pdf");
+        window.ipcRenderer.send("add-log", JSON.stringify(exampleData));
+        window.ipcRenderer.send("print-to-pdf", exampleData.generalData[0].value);
     };
 
     return (
@@ -274,12 +275,10 @@ function PdfSummary() {
                     </Table>
                 </TableContainer>
                 <Typography paddingTop="50px" component="h1" variant="h5">
-                    Dane dodatkowe
+                    Metodologia
                 </Typography>
                 <Typography component="p" variant="body1">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, quos dolorum. Quod, quaerat. Quisquam, voluptate. Quisquam, unde. Voluptatem, voluptatibus? Quia, id? Quam, natus? Quisquam, voluptatum. Natus, quia. Quo, quos dolorum. Quod, quaerat. Quisquam, voluptate. Quisquam, unde. Voluptatem, voluptatibus? Quia, id? Quam, natus? Quisquam, voluptatum. Natus, quia.
-                    Quo, quos dolorum. Quod, quaerat. Quisquam, voluptate. Quisquam, unde. Voluptatem, voluptatibus? Quia, id? Quam, natus? Quisquam, voluptatum. Natus, quia. Quo, quos dolorum. Quod, quaerat. Quisquam, voluptate. Quisquam, unde. Voluptatem, voluptatibus? Quia, id? Quam, natus? Quisquam, voluptatum. Natus, quia.
-                    Quo, quos dolorum. Quod, quaerat. Quisquam, voluptate. Quisquam, unde. Voluptatem, voluptatibus? Quia, id? Quam, natus? Quisquam, voluptatum. Natus, quia. Quo, quos dolorum. Quod, quaerat. Quisquam, voluptate. Quisquam, unde. Voluptatem, voluptatibus? Quia, id? Quam, natus? Quisquam, voluptatum. Natus, quia.
+                    Brak XDD
                 </Typography>
                 <Button
                     fullWidth
@@ -287,7 +286,7 @@ function PdfSummary() {
                     variant="contained"
                     sx={{ mt: 3, mb: 2, displayPrint: "none" }}
                     style={{ backgroundColor: 'green', color: 'white' }}
-                    >
+                >
                     Zapisz do PDF
                 </Button>
                 <Link to="/">
@@ -296,7 +295,7 @@ function PdfSummary() {
                         variant="contained"
                         sx={{ mt: 3, mb: 2, displayPrint: "none" }}
                         style={{ backgroundColor: 'red', color: 'white' }}
-                        >
+                    >
                         Anuluj
                     </Button>
                 </Link>
