@@ -22,6 +22,11 @@ function App() {
                 <Button>New report</Button>
               </Link>
             </li>
+            <li>
+              <Link to="/api-summary">
+                <Button>Api summary</Button>
+              </Link>
+            </li>
           </ul>
         </nav>
       </main>
