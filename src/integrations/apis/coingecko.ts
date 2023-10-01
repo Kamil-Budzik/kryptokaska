@@ -1,6 +1,6 @@
+import {AxiosUtil} from "../axios/Axios.ts";
 import {HistoricalData} from "../interfaces/api.ts";
 import {Urls} from "../axios/constants/Constants.ts";
-import {AxiosUtil} from "../axios/Axios.ts";
 
 export class CoinGecko {
 

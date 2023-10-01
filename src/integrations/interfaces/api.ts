@@ -11,6 +11,12 @@ export interface CurrencyData {
     Currency: string
 }
 
+export interface HistoricalData {
+    dates: string[]
+    prices: number[]
+}
+
+
 export class ApiFacade {
 
     async  callApi(apiName: string, currency: string): Promise<CurrencyData | undefined> {

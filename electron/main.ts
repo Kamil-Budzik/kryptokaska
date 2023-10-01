@@ -21,15 +21,14 @@ const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
 
 function createWindow() {
   win = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
+    icon: path.join(process.env.VITE_PUBLIC, 'kryptokaska.jpg'),
     webPreferences: {
       nodeIntegration: true,
       // contextIsolation: false,
       preload: path.join(__dirname, 'preload.js'),
-    },
-    fullscreen: true,
+    }
   })
-
+  win.removeMenu();
   // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {
     win?.webContents.send('main-process-message', (new Date).toLocaleString())
