@@ -152,7 +152,7 @@ function NewReport() {
 
                 stockMarketCryptoData.push(
                     {
-                        value: 1,
+                        value: Number(crypto.amountOfCryptoAsset) * exchangeRate * (rate?.OneDayPriceAverage ?? -1),
                         crypto: {
                             id: "-1",
                             shortName: CRYPTO_CURRENCIES.find(constCurr =>
