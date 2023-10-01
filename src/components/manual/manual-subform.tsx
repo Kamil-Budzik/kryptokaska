@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-ignore
+// @ts-nocheck
 import { Button, InputLabel, Select, MenuItem, TextField } from '@mui/material';
 import styled from '@emotion/styled';
 
