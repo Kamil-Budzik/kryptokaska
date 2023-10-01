@@ -28,21 +28,33 @@ function Manual() {
   } = useForm<Inputs>();
   const [isPLNField, setIsPLNField] = useState(false);
   const dispatch = useDispatch();
+  const [calculatedAmount, setCalculatedAmount] = useState(0);
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     dispatch(changeFormState(data));
   };
 
+  const handleAmountInput = (data) => {
+    console.log(data.target.value, calculatedAmount)
+    if (!isPLNField) {
+      console.log("XD");
+      return;
+    }
+
+    setCalculatedAmount(data.target.value * 3.8);
+  }
+
   // Sorry for that, but it's working i guess
   watch(
     ('currency',
-    (formState) => {
-      if (formState.currency === 'USD') {
-        setIsPLNField(true);
-      } else {
-        setIsPLNField(false);
-      }
-    }),
+      (formState) => {
+        if (formState.currency === 'USD') {
+          setIsPLNField(true);
+        } else {
+          setIsPLNField(false);
+        }
+      }),
   );
+
   // TODO: add styles and proper validation
   return (
     <>
@@ -61,13 +73,11 @@ function Manual() {
         {errors.url && <span>To pole jest wymagane</span>}
 
         <div>
-          <TextField
-            {...register('amount', { required: true, valueAsNumber: true })}
-          />
+          <TextField type='number' onInput={handleAmountInput} {...register('amount', { required: true, valueAsNumber: true })} />
           <br />
           {/*TODO: pass dynamic value based on dolar's ratio */}
           {isPLNField && (
-            <TextField value={111} disabled label="PLN" sx={{ my: 5 }} />
+            <TextField value={calculatedAmount} disabled label="PLN" sx={{ my: 5 }} />
           )}
           <InputLabel id="currency">Waluta</InputLabel>
           <Select
