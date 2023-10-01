@@ -8,10 +8,10 @@ import { useEffect, useState } from 'react';
 import { CryptoEntry } from '../../electron/file-manager.ts';
 import { useDispatch } from 'react-redux';
 import { changeFormState } from '../store/new-report';
-import { Link, useNavigate, useNavigation } from 'react-router-dom';
-import { APIS } from '../integrations/axios/constants/Constants.ts';
+import { useNavigate } from 'react-router-dom';
 import { NBPApi } from "../integrations/apis/nbp.ts";
 import { ApiFacade } from "../integrations/interfaces/api.ts";
+import {APIS, CRYPTO_CURRENCIES} from "../integrations/axios/constants/Constants.ts";
 
 interface GeneralData {
   name: string;
@@ -64,7 +64,7 @@ const INVALID_INPUT = 'Niewłaściwy format';
 function NewReport() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const [headquarters, setHeadquarters] = useState<string[]>();
   const [lastClickedButton, setLastClickedButton] = useState<string>();
   const [availableCryptoCurrencies, setAvailableCryptoCurrencies] =
@@ -109,72 +109,84 @@ function NewReport() {
     else if (lastClickedButton === "manual") {
       navigate("/manual")
     }
-    // const nbp = new NBPApi()
-    // const cryptoApisFacade = new ApiFacade()
 
-    // const currentDate = new Date()
+        const nbp = new NBPApi()
+        const cryptoApisFacade = new ApiFacade()
 
-    // const cryptoSummaryData: CryptoSummaryData[] = []
-    // await Promise.all(data.cryptoAssets.map(async value => {
-    //     cryptoSummaryData.push({
-    //         crypto: {
-    //             id: "-1",
-    //             fullName: value.cryptoAsset,
-    //             shortName: value.cryptoAsset
-    //         },
-    //         amount: Number(value.amountOfCryptoAsset),
-    //         usdRate: await nbp.getNBPCurrencyExchangeRate("A", "USD"),
-    //         sources: APIS.map(api => api.name),
-    //         averageValue: -1
-    //     })
-    // }))
+        const currentDate = new Date()
 
-    // const stockMarketData: StockMarketData[] = []
-    // const stockMarketCryptoData: StockMarketCurrencyData[] = []
+        const cryptoSummaryData: CryptoSummaryData[] = []
+        await Promise.all(data.cryptoAssets.map(async value => {
+            cryptoSummaryData.push({
+                crypto: {
+                    id: "-1",
+                    fullName: CRYPTO_CURRENCIES.find(constCurr => constCurr.uiName === value.cryptoAsset)?.name ?? "not found",
+                    shortName: CRYPTO_CURRENCIES.find(constCurr => constCurr.uiName === value.cryptoAsset)?.shortcut ?? "not found",
+                },
+                amount: Number(value.amountOfCryptoAsset),
+                usdRate: await nbp.getNBPCurrencyExchangeRate("A", "USD"),
+                sources: APIS.map(api => api.name),
+                averageValue: -1
+            })
+        }))
 
-    // await Promise.all(APIS.map(async (value) => {
-    //     await Promise.all(data.cryptoAssets.map(async (crypto) => {
-    //         const rate = await cryptoApisFacade.callApi(value.name, crypto.cryptoAsset);
+        console.log('cryptoSummaryData')
+        console.log(cryptoSummaryData)
 
-    //         stockMarketCryptoData.push(
-    //             {
-    //                 value: 1,
-    //                 crypto: {
-    //                     id: "-1",
-    //                     shortName: crypto.cryptoAsset,
-    //                     fullName: crypto.cryptoAsset
-    //                 },
-    //                 currency: "USD",
-    //                 isAvailable: !!rate,
-    //                 rate: rate?.OneDayPriceAverage ?? -1,
-    //                 plnCurrency: (Number(crypto.amountOfCryptoAsset) * (rate?.OneDayPriceAverage ?? -1)).toString()
-    //             }
-    //         )
-    //     }))
+        const stockMarketData: StockMarketData[] = []
+        let stockMarketCryptoData: StockMarketCurrencyData[] = []
 
-    //     stockMarketData.push(
-    //         {
-    //             marketName: value.name,
-    //             url: value.url,
-    //             data: stockMarketCryptoData
-    //         }
-    //     )
-    // }))
+        for (const value of APIS) {
 
-    // const result: PDFSummaryData = {
-    //     generalData: [
-    //         { name: "id", value: currentDate.getTime().toString() + "-" + data.caseNumber },
-    //         { name: "Data utworzenia", value: currentDate.toLocaleDateString() },
-    //         { name: "Numer sprawy", value: data.caseNumber },
-    //         { name: "Dane właściciela", value: data.cryptoCurrencyOwnerData }
-    //     ],
-    //     cryptoSummaryData,
-    //     stockMarketData
-    // };
-    // console.log(result)
-  }
+            for (const crypto of data.cryptoAssets) {
 
+                console.log(value.name + " --- " + crypto.cryptoAsset + " --- " + stockMarketCryptoData.length)
 
+                const rate = await cryptoApisFacade.callApi(value.name,
+                    CRYPTO_CURRENCIES.find(constCurr=>
+                        constCurr.uiName === crypto.cryptoAsset)?.shortcut ?? "not found");
+
+                stockMarketCryptoData.push(
+                    {
+                        value: 1,
+                        crypto: {
+                            id: "-1",
+                            shortName: CRYPTO_CURRENCIES.find(constCurr =>
+                                constCurr.uiName === crypto.cryptoAsset)?.shortcut ?? "not found",
+                            fullName: CRYPTO_CURRENCIES.find(constCurr =>
+                                constCurr.uiName === crypto.cryptoAsset)?.name ?? "not found"
+                        },
+                        currency: "USD",
+                        isAvailable: !!rate,
+                        rate: rate?.OneDayPriceAverage ?? -1,
+                        plnCurrency: (Number(crypto.amountOfCryptoAsset) * (rate?.OneDayPriceAverage ?? -1)).toString()
+                    }
+                )
+            }
+
+            stockMarketData.push(
+                {
+                    marketName: value.name,
+                    url: value.url,
+                    data: [ ...stockMarketCryptoData ]
+                }
+            )
+
+            stockMarketCryptoData = []
+        }
+
+        const result: PDFSummaryData = {
+            generalData: [
+                { name: "id", value: currentDate.getTime().toString() + "-" + data.caseNumber },
+                { name: "Data utworzenia", value: currentDate.toLocaleDateString() },
+                { name: "Numer sprawy", value: data.caseNumber },
+                { name: "Dane właściciela", value: data.cryptoCurrencyOwnerData }
+            ],
+            cryptoSummaryData,
+            stockMarketData
+        };
+        console.log(result)
+    }
 
   return (
     <Wrapper>
@@ -232,7 +244,7 @@ function NewReport() {
               fullWidth
               id="cryptoCurrencyOwnerData"
               label="Dane identyfikujące właściciela kryptowaluty"
-              {...register('cryptoCurrencyOwnerData', { required: true, pattern: /^[A-Za-z0-9.-]{1,100}$/i })}
+              {...register('cryptoCurrencyOwnerData', { required: true, pattern: /^[a-zA-Z0-9.\s]{1,100}$/i })}
             />
           </Grid>
           {fields.map((field, index) => (
