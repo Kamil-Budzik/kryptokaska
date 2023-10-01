@@ -2,6 +2,7 @@ import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Typog
 import Wrapper from "../components/UI/Wrapper";
 import { Container } from "@mui/system";
 import { CryptoEntry } from "../../electron/file-manager";
+import { NavLink as Link } from 'react-router-dom';
 
 
 interface GeneralData {
@@ -289,6 +290,16 @@ function PdfSummary() {
                     >
                     Zapisz do PDF
                 </Button>
+                <Link to="/">
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2, displayPrint: "none" }}
+                        style={{ backgroundColor: 'red', color: 'white' }}
+                        >
+                        Anuluj
+                    </Button>
+                </Link>
             </Wrapper>
         </Container>
     )
