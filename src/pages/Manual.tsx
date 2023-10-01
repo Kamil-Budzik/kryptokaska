@@ -1,101 +1,85 @@
-import { useDispatch } from 'react-redux';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import TextField from '@mui/material/TextField';
-import { Button, InputLabel, Select, MenuItem } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { useEffect, useState } from 'react';
+import ManualSubFormSet from '../components/manual/manual-subform-set';
+import { Inputs as NewReportInputs } from './NewReport';
+import { Inputs } from '../components/manual/manual-subform';
+import { Button } from '@mui/material';
+import Wrapper from '../components/UI/Wrapper';
 import { changeFormState } from '../store/manual';
-import styled from '@emotion/styled';
-import { useState } from 'react';
 
-const StyledForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 0.7em;
-`;
-
-type Inputs = {
-  url: string;
-  stockMarketName: string;
-  currency: string;
-  amount: number;
-};
 
 function Manual() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-  } = useForm<Inputs>();
-  const [isPLNField, setIsPLNField] = useState(false);
+  // const myData = useSelector((state) => state.myData);
+  const manualState = useSelector((state: { newReport: NewReportInputs }) => state.newReport);
+  const [rateData, setRateData] = useState<Inputs[][]>([])
+  const [errorMessage, setErrorMessage] = useState<string>()
+  const [rate, _setRate] = useState<number>(4)
   const dispatch = useDispatch();
-  const [calculatedAmount, setCalculatedAmount] = useState(0);
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    dispatch(changeFormState(data));
+
+  const handleSubmit = (id: number) => (input: Inputs[]) => {
+    console.log(id, input, rateData);
+
+    setRateData((prev) => {
+      prev[id] = input;
+      return prev;
+    });
   };
 
-  const handleAmountInput = (data) => {
-    console.log(data.target.value, calculatedAmount)
-    if (!isPLNField) {
-      console.log("XD");
+  useEffect(() => {
+    console.log(manualState);
+  }, []);
+
+  const handleButtonClick = () => {
+
+    const count = rateData.flatMap((rateData) => rateData).filter(item => item).length
+    const desiredCount = manualState.cryptoAssets.filter(item => item.cryptoAsset).length * 3
+
+    console.log(rateData, manualState);
+    console.log(count, desiredCount);
+    if (count !== desiredCount) {
+      setErrorMessage("Wypełnij wszystkie pola")
       return;
     }
 
-    setCalculatedAmount(data.target.value * 3.8);
+    const newData = rateData.map((rateData) => rateData.map((innerRateData) => {
+      if (innerRateData.currency === "USD") {
+        innerRateData.plnAmount = innerRateData.amount * rate;
+      }
+      return innerRateData;
+    }));
+
+    console.log(newData);
+
+    dispatch(changeFormState({
+      states: newData
+    }));
   }
 
-  // Sorry for that, but it's working i guess
-  watch(
-    ('currency',
-      (formState) => {
-        if (formState.currency === 'USD') {
-          setIsPLNField(true);
-        } else {
-          setIsPLNField(false);
-        }
-      }),
-  );
-
   // TODO: add styles and proper validation
+
   return (
-    <>
-      <StyledForm onSubmit={handleSubmit(onSubmit)}>
-        {/*TODO: possible validate if its URL */}
-        <TextField
-          label="Link do strony WWW"
-          {...register('url', { required: true })}
-        />
-        {errors.url && <span>To pole jest wymagane</span>}
+    <Wrapper>
+      {manualState.cryptoAssets.map((cryptoEntry, id) => (
+        <ManualSubFormSet key={JSON.stringify(cryptoEntry) + "id"} onSubmit={handleSubmit(id)} rate={123} crypto={cryptoEntry}></ManualSubFormSet>
+      ))}
 
-        <TextField
-          label="Nazwa gieldy/kantoru"
-          {...register('stockMarketName', { required: true })}
-        />
-        {errors.url && <span>To pole jest wymagane</span>}
-
-        <div>
-          <TextField type='number' onInput={handleAmountInput} {...register('amount', { required: true, valueAsNumber: true })} />
-          <br />
-          {/*TODO: pass dynamic value based on dolar's ratio */}
-          {isPLNField && (
-            <TextField value={calculatedAmount} disabled label="PLN" sx={{ my: 5 }} />
-          )}
-          <InputLabel id="currency">Waluta</InputLabel>
-          <Select
-            labelId="currency"
-            id="currency"
-            {...register('currency')}
-            label="Waluta"
-            defaultValue="PLN"
-          >
-            <MenuItem value="PLN">PLN</MenuItem>
-            <MenuItem value="USD">USD</MenuItem>
-          </Select>
-        </div>
-
-        <Button type="submit">Zatwierdz</Button>
-      </StyledForm>
-    </>
+      {/* Add submit button */}
+      <div style={{ color: 'red' }}>{errorMessage}</div>
+      <Button
+        type="button"
+        fullWidth
+        variant="contained"
+        sx={{ mt: 3, mb: 2 }}
+        onClick={handleButtonClick}
+        style={{ backgroundColor: 'green', color: 'white' }}
+      >
+        Przejdź dalej
+      </Button>
+    </Wrapper>
   );
 }
 
 export default Manual;
+
+

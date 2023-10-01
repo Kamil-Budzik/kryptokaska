@@ -46,13 +46,14 @@ interface StockMarketData {
   data: StockMarketCurrencyData[];
 }
 
-interface PDFSummaryData {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export interface PDFSummaryData {
   generalData: GeneralData[];
   cryptoSummaryData: CryptoSummaryData[];
   stockMarketData: StockMarketData[];
 }
 
-type Inputs = {
+export type Inputs = {
   enforcementAuthority: string;
   caseNumber: string;
   cryptoCurrencyOwnerData: string;
@@ -280,6 +281,7 @@ function NewReport() {
                 <TextField
                   required
                   fullWidth
+                  type="number"
                   label="Ilość kryptoaktywów"
                   defaultValue={field.amountOfCryptoAsset}
                   {...register(`cryptoAssets.${index}.amountOfCryptoAsset`, { required: true, pattern: /^[0-9]+$/i })}

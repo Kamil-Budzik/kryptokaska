@@ -6,23 +6,22 @@ export interface ManualState {
   stockMarketName: string;
   currency: string;
   amount: number;
+  plnAmount?: number;
 }
 
-const initialState: ManualState = {
-  url: '',
-  stockMarketName: '',
-  amount: 0,
-  currency: 'PLN',
-};
+export interface ManualStateObject {
+  states: ManualState[][];
+}
+const initialState: ManualStateObject = { 
+  states: [] 
+}
 
 export const manualSlice = createSlice({
   name: 'manual',
   initialState,
   reducers: {
-    changeFormState: (state, action: PayloadAction<ManualState>) => {
-      state.url = action.payload.url;
-      state.currency = action.payload.currency;
-      state.stockMarketName = action.payload.stockMarketName;
+    changeFormState: (state, action: PayloadAction<ManualStateObject>) => {
+      state.states = action.payload.states;
     },
   },
 });
