@@ -18,6 +18,7 @@ type Inputs = {
 };
 
 const INPUT_CANT_BE_EMPTY = 'Pole nie może być puste';
+const INVALID_INPUT = 'Niewłaściwy format';
 
 function NewReport() {
   const dispatch = useDispatch();
@@ -84,13 +85,12 @@ function NewReport() {
                   {...params}
                   required
                   error={!!errors.enforcementAuthority}
-                  helperText={
-                    errors.enforcementAuthority ? INPUT_CANT_BE_EMPTY : null
-                  }
+                  helperText={errors.enforcementAuthority ? errors.enforcementAuthority.type == 'required' ? INPUT_CANT_BE_EMPTY : INVALID_INPUT : null}
                   fullWidth
                   id="enforcementAuthority"
                   label="Nazwa organu egzekucyjnego"
-                  {...register('enforcementAuthority', { required: true })}
+                  {...register('enforcementAuthority', { required: true,
+                  validate: value => headquarters?.includes(value) || INVALID_INPUT})}
                 />
               )}
             />
@@ -99,24 +99,22 @@ function NewReport() {
             <TextField
               required
               error={!!errors.caseNumber}
-              helperText={errors.caseNumber ? INPUT_CANT_BE_EMPTY : null}
+              helperText={errors.caseNumber ? errors.caseNumber.type == 'required' ? INPUT_CANT_BE_EMPTY : INVALID_INPUT : null}
               fullWidth
               id="caseNumber"
               label="Numer sprawy"
-              {...register('caseNumber', { required: true })}
+              {...register('caseNumber', { required: true, pattern: /^[A-Za-z0-9./-]{1,100}$/i })}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
               required
               error={!!errors.cryptoCurrencyOwnerData}
-              helperText={
-                errors.cryptoCurrencyOwnerData ? INPUT_CANT_BE_EMPTY : null
-              }
+              helperText={errors.cryptoCurrencyOwnerData ? errors.cryptoCurrencyOwnerData.type == 'required' ? INPUT_CANT_BE_EMPTY : INVALID_INPUT : null}
               fullWidth
               id="cryptoCurrencyOwnerData"
               label="Dane identyfikujące właściciela kryptowaluty"
-              {...register('cryptoCurrencyOwnerData', { required: true })}
+              {...register('cryptoCurrencyOwnerData', { required: true, pattern: /^[A-Za-z0-9.-]{1,100}$/i })}
             />
           </Grid>
           {fields.map((field, index) => (
@@ -139,7 +137,7 @@ function NewReport() {
                       required
                       fullWidth
                       label="Nazwa Kryptoaktywa"
-                      {...register(`cryptoAssets.${index}.cryptoAsset`)}
+                      {...register(`cryptoAssets.${index}.cryptoAsset`, {required: true})}
                     />
                   )}
                 />
@@ -150,7 +148,7 @@ function NewReport() {
                   fullWidth
                   label="Ilość kryptoaktywów"
                   defaultValue={field.amountOfCryptoAsset}
-                  {...register(`cryptoAssets.${index}.amountOfCryptoAsset`)}
+                  {...register(`cryptoAssets.${index}.amountOfCryptoAsset`, {required: true, pattern: /^[0-9]+$/i })}
                 />
               </Grid>
               {fields.length > 1 && (
