@@ -24,6 +24,6 @@ export class Binance implements Api {
     }
 
     private formatCurrencyId (currency: string): string {
-        return `${currency}-USDT`
+        return `${currency}USDT`
     }
 }

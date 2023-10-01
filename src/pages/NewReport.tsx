@@ -28,20 +28,21 @@ interface CryptoSummaryData {
 
 interface StockMarketCurrencyData {
   crypto: CryptoEntry;
-  isAvailable: boolean;
+  isFromApi: boolean;
   // wartosc wedlug gieldy
-  rate: number;
+  rateInUSD: number;
   // waluta pln/uds
   currency: string;
   // wartosc w zlotowkach (kurs)
-  plnCurrency: string;
+  rateInPLN: string;
   // wartosc waluty w przeliczneiu na zlotowki w sumie
   value: number;
+  amount: number;
 }
 
 interface StockMarketData {
-  marketName: string;
-  url: string;
+  name: string;
+  address: string;
   data: StockMarketCurrencyData[];
 }
 
@@ -159,17 +160,18 @@ function NewReport() {
                                 constCurr.uiName === crypto.cryptoAsset)?.name ?? "not found"
                         },
                         currency: "USD",
-                        isAvailable: !!rate,
-                        rate: rate?.OneDayPriceAverage ?? -1,
-                        plnCurrency: (exchangeRate * (rate?.OneDayPriceAverage ?? -1)).toString()
+                        isFromApi: !!rate,
+                        rateInUSD: rate?.OneDayPriceAverage ?? -1,
+                        rateInPLN: (exchangeRate * (rate?.OneDayPriceAverage ?? -1)).toString(),
+                        amount: Number(crypto.amountOfCryptoAsset)
                     }
                 )
             }
 
             stockMarketData.push(
                 {
-                    marketName: value.name,
-                    url: value.url,
+                    name: value.name,
+                    address: value.url,
                     data: [ ...stockMarketCryptoData ]
                 }
             )
