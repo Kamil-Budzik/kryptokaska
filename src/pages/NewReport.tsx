@@ -111,6 +111,8 @@ function NewReport() {
     }
 
         const nbp = new NBPApi()
+        const exchangeRate = await nbp.getNBPCurrencyExchangeRate("A", "USD")
+
         const cryptoApisFacade = new ApiFacade()
 
         const currentDate = new Date()
@@ -124,7 +126,7 @@ function NewReport() {
                     shortName: CRYPTO_CURRENCIES.find(constCurr => constCurr.uiName === value.cryptoAsset)?.shortcut ?? "not found",
                 },
                 amount: Number(value.amountOfCryptoAsset),
-                usdRate: await nbp.getNBPCurrencyExchangeRate("A", "USD"),
+                usdRate: exchangeRate,
                 sources: APIS.map(api => api.name),
                 averageValue: -1
             })
@@ -159,7 +161,7 @@ function NewReport() {
                         currency: "USD",
                         isAvailable: !!rate,
                         rate: rate?.OneDayPriceAverage ?? -1,
-                        plnCurrency: (Number(crypto.amountOfCryptoAsset) * (rate?.OneDayPriceAverage ?? -1)).toString()
+                        plnCurrency: (exchangeRate * (rate?.OneDayPriceAverage ?? -1)).toString()
                     }
                 )
             }
