@@ -96,8 +96,8 @@ export class FileManager {
     if (!fs.existsSync(logPath)) {
       fs.writeFileSync(logPath, '');
     }
-
-    fs.appendFileSync(logPath, log + '\n');
+    const date = new Date();
+    fs.appendFileSync(logPath, `${date.toLocaleString()} - ${log}\n`);
   }
 
   public static getAvailableCryptos() {
