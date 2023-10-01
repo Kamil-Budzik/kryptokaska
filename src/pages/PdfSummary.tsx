@@ -1,8 +1,8 @@
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Typography, Divider } from "@mui/material";
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Typography, Divider, Button } from "@mui/material";
 import Wrapper from "../components/UI/Wrapper";
 import { Container } from "@mui/system";
 import { CryptoEntry } from "../../electron/file-manager";
-import { useEffect } from "react";
+
 
 interface GeneralData {
     name: string;
@@ -157,7 +157,6 @@ function PdfSummary() {
             <TableCell align="left">{data.currency}</TableCell>
             <TableCell align="left">{data.valueInPLN || "-"}</TableCell>
             <TableCell align="left">{data.valueInPLN >= 0 ? "Tak" : "Nie"}</TableCell>
-
             <TableCell align="left">{data.totalValue}</TableCell>
         </>
     );
@@ -165,9 +164,9 @@ function PdfSummary() {
         return data.isAvaible ? getStockDataForAvailable(data) : getStockDataForUnavailable();
     }
 
-    useEffect(() => {
+    const saveFile = () => {
         window.ipcRenderer.send("print-to-pdf");
-    }, []);
+    };
 
     return (
         <Container>
@@ -281,6 +280,15 @@ function PdfSummary() {
                     Quo, quos dolorum. Quod, quaerat. Quisquam, voluptate. Quisquam, unde. Voluptatem, voluptatibus? Quia, id? Quam, natus? Quisquam, voluptatum. Natus, quia. Quo, quos dolorum. Quod, quaerat. Quisquam, voluptate. Quisquam, unde. Voluptatem, voluptatibus? Quia, id? Quam, natus? Quisquam, voluptatum. Natus, quia.
                     Quo, quos dolorum. Quod, quaerat. Quisquam, voluptate. Quisquam, unde. Voluptatem, voluptatibus? Quia, id? Quam, natus? Quisquam, voluptatum. Natus, quia. Quo, quos dolorum. Quod, quaerat. Quisquam, voluptate. Quisquam, unde. Voluptatem, voluptatibus? Quia, id? Quam, natus? Quisquam, voluptatum. Natus, quia.
                 </Typography>
+                <Button
+                    fullWidth
+                    onClick={saveFile}
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2, displayPrint: "none" }}
+                    style={{ backgroundColor: 'green', color: 'white' }}
+                    >
+                    Zapisz do PDF
+                </Button>
             </Wrapper>
         </Container>
     )

@@ -6,9 +6,9 @@ import { Button } from '@mui/material';
 function Wrapper({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <nav>
+      <nav >
         <Link to="/">
-          <Button variant="outlined">Return</Button>
+          <Button sx={{ displayPrint: "none" }} variant="outlined">Return</Button>
         </Link>
       </nav>
       {children}
