@@ -23,6 +23,7 @@ function createWindow() {
   win = new BrowserWindow({
     icon: path.join(process.env.VITE_PUBLIC, 'kryptokaska.jpg'),
     webPreferences: {
+      webSecurity: false,
       nodeIntegration: true,
       // contextIsolation: false,
       preload: path.join(__dirname, 'preload.js'),
